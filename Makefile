@@ -9,5 +9,5 @@ swipe: swipe.c vector.c
 install: swipe
 	install swipe $(prefix)/bin
 
-clean: swipe
-	rm $(target)
+clean: 
+	rm -f $(target)

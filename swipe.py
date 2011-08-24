@@ -29,6 +29,7 @@
 
     http://ling.upenn.edu/~kgorman/c/swipe/ """
 
+import numpy as NP
 from bisect import bisect
 from math import sqrt, fsum
 from subprocess import Popen, PIPE
@@ -57,13 +58,17 @@ def var(x):
 
 def regress(x, y):
     """ compute the slope, intercept, and R^2 for y ~ x """
+    solution = NP.linalg.lstsq(NP.vstack(x, NP.ones(len(x)).T), y)
+    return solution[0] + [solution[1]]
+    #FIXME
+    """ # OLD-SCHO PYTHON_ONLY linear regression 
     n = float(len(x))
     if n == 0:
         raise ValueError, 'empty vector(s)'
     if n != len(y):
         raise ValueError, 'x and y must be the same length'
-    x_sum = fsum(x)
-    y_sum = fsum(y)
+    x_sum = sum(x)
+    y_sum = sum(y)
     r = 0 # being built up iteratively
     for (i, j) in zip(x, y):
         r += i * j
@@ -73,22 +78,25 @@ def regress(x, y):
     slope = r / q
     r /= sqrt(q * (n * ss(y) - (y_sum ** 2))) # now it's done!
     return slope, y_sum / n - slope * x_sum / n, r ** 2
+    """
 
 
 class Swipe(object):
     """ Wrapper class for SWIPE' pitch extractions """
 
-    def __init__(self, file, pMin=100.0, pMax=600.0, s=0.3, t=0.01, mel=False, 
-                                                                bin = 'swipe'):
+    def __init__(self, file, pMin=100.0, pMax=600.0, s=0.3, t=0.01, mel=False):
         if mel:
-            P = Popen('%s -i %s -r %f:%f -s %f -t %f -nm' % (bin, file, pMin, 
-                                       pMax, s, t), shell=True,
-                                           stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            P = Popen(['swipe', file, '-r', '%f:%f' % (pMin, pMax), '-s', s, '-t', t), stdout=PIPE, stderr=PIPE)
+
+'%s -i %s -r %f:%f -s %f -t %f -nm' % (bin, file, pMin, 
+                      pMax, s, t), shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         else:
             P = Popen('%s -i %s -r %f:%f -s %f -t %f -n' % (bin, file, pMin, 
                                        pMax, s, t), shell=True,
-                                           stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        assert not P.stderr.readline(), 'Err: %s' % P.stderr.readlines()[-1]
+                                       stdin=PIPE, stdout=PIPE, stderr=PIPE)
+	if P.stderr.readline(): # error
+		'Err: %s' % P.stderr.readlines()[-1]
+		exit(1)
         self.time = []
         self.pitch = []
         for line in P.stdout: # Data is a list of (time, pitch) pairs

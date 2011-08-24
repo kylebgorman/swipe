@@ -99,7 +99,7 @@
 #define MIN                          100.
 #define MAX                          600.
 
-#define VNUM                         1.0 // Current version
+#define VNUM                         1.1 // Current version
 
 #ifndef NAN                          
     #define NAN                      sqrt(-1.)
@@ -510,14 +510,14 @@ void printp(vector p, char out[], double dt, int mel, int vlo) {
     if (mel) {
         if (vlo) {
             for (i = 0; i < p.x; i++) {
-                fprintf(sink, "%4.7f %5.4f\n", t, hz2mel(p.v[i])); 
+                fprintf(sink, "%4.4f %5.4f\n", t, hz2mel(p.v[i])); 
                 t += dt;
             }
         }
         else { // Default case
             for (i = 0; i < p.x; i++) {
                 if (!isnan(p.v[i])) {
-                    fprintf(sink, "%4.7f %5.4f\n", t, hz2mel(p.v[i])); 
+                    fprintf(sink, "%4.4f %5.4f\n", t, hz2mel(p.v[i])); 
                 }
                 t += dt;
             }
@@ -526,14 +526,14 @@ void printp(vector p, char out[], double dt, int mel, int vlo) {
     else {
         if (vlo) {
             for (i = 0; i < p.x; i++) {
-                fprintf(sink, "%4.7f %5.4f\n", t, p.v[i]); 
+                fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]); 
                 t += dt;
             }
         }
         else { 
             for (i = 0; i < p.x; i++) {
                 if (!isnan(p.v[i])) {
-                    fprintf(sink, "%4.7f %5.4f\n", t, p.v[i]); 
+                    fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]); 
                 }
                 t += dt;
             }
@@ -552,15 +552,15 @@ waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, University of Florida.\n\n\
 \tmore information: <http://ling.upenn.edu/~kgorman/c/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
-swipe [-i INPUT] [-b LIST] [-o OUTPUT] [-r MIN:MAX] [-s ST] [-t DT] [-mnhv]\n\n\
+swipe [-i INPUT] [-b LIST] [-o OUTPUT] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
 -i FILE\t\tinput file\t\t\t\t\tSTDIN\n\
 -o FILE\t\toutput file\t\t\t\t\tSTDOUT\n\
 -b LIST\t\tbatch mode: [LIST is a file containing\n\
 \t\tone \"INPUT OUTPUT\" pair per line]\n\n\
--r MIN:MAX\tpitch range in Hertz\t\t\t\t100:600\n\
--s THRSHLD\tstrength threshold  [0 <= x <= 1]\t\t0.300\n\
--t SECONDS\ttimestep in seconds [must be < SF / 2]\t\t0.001\n\n\
+-r MIN:MAX\tpitchrange in Hertz\t\t\t\t100:600\n\
+-s TIMESTEP\ttimestep in seconds\t\t\t\t0.001\n\
+-t THRESHOLD\tstrength threshold [0 <= x <= 1]\t\t0.300\n\n\
 -m\t\tOutput Mel pitch\t\t\t\tno\n\
 -n\t\tDon't output voiceless frames\t\t\tno\n\
 -h\t\tDisplay this message, then quit\n\
