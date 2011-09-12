@@ -1,33 +1,32 @@
 /* Copyright (c) 2009-2011 Kyle Gorman
-* 
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this software and associated documentation files (the "Software"), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-* 
-*  The above copyright notice and this permission notice shall be included in
-*  all copies or substantial portions of the Software.
-* 
-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*  THE SOFTWARE.
-*
-*  vector: some data structures and mathematical function
-*  Kyle Gorman <kgorman@ling.upenn.edu>
-* 
-*  If for some reason you didn't get vector.h, which you'll need to #include 
-*  vector, it is available at:
-*
-*               http://ling.upenn.edu/~kgorman/c/vector.h       
-* 
-*  This is version 1.0., i.e. I think I got all obvious stuff working ideally. 
-*/
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to 
+ * deal in the Software without restriction, including without limitation the 
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ * 
+ * vector: some data structures and mathematical function
+ * Kyle Gorman <kgorman@ling.upenn.edu>
+ * 
+ * If for some reason you didn't get vector.h, which you'll need to #include 
+ * vector, it is available at:
+ *
+ * http://ling.upenn.edu/~kgorman/c/vector.h       
+ * 
+ * This is version 1.0., i.e. I think I got all obvious stuff working ideally. 
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -87,7 +86,7 @@ vector copyv(vector yr_vector) {
 }
 
 // free the memory associated with the vector
-void freev(vector yr_vector) { 
+void freev(vector yr_vector) {
     free(yr_vector.v);
 }
 
@@ -144,10 +143,11 @@ int bisectv(vector yr_vector, double key) {
     return(hi);
 }
 
-// like bisectv(), but the minimum starting value is passed as an argument. This
-// is good for multiple bisection calls for forming a new vector when the 
-// queries are a non-constant interval; but make sure to use bisectv() the 
-// first time.
+/* like bisectv(), but the minimum starting value is passed as an argument. 
+ * This is good for multiple bisection calls for forming a new vector when the 
+ * queries are a non-constant interval; but make sure to use bisectv() the 
+ * first time.
+ */
 int bilookv(vector yr_vector, double key, int lo) { 
     int md;                                       
     int hi = yr_vector.x;                          
@@ -396,7 +396,7 @@ intmatrix onesim(int xSz, int ySz) {
 intmatrix copyim(intmatrix yr_matrix) { 
     int i;
     intmatrix nw_matrix = makeim(yr_matrix.x, yr_matrix.y);
-    for (i = 0; i < yr_matrix.x; i++) { // NB: does not assume contiguous memory
+    for (i = 0; i < yr_matrix.x; i++) { // does not assume contiguous memory
         memcpy(nw_matrix.m[i], yr_matrix.m[i], sizeof(int) * yr_matrix.y);
     }
     return(nw_matrix);
@@ -488,13 +488,13 @@ vector spline(vector x, vector y) {
         p = sig * y2.v[i - 1] + 2.;
         y2.v[i] = (sig - 1.) / p;
         u[i] = (y.v[i + 1] - y.v[i]) / (x.v[i + 1] - x.v[i]) -
-                                  (y.v[i] - y.v[i - 1]) / (x.v[i] - x.v[i - 1]);
+                                 (y.v[i] - y.v[i - 1]) / (x.v[i] - x.v[i - 1]);
         u[i] = (6. * u[i] / (x.v[i + 1] - x.v[i - 1]) - sig * u[i - 1]) / p;
     }
     qn = .5; // Right boundary
     y2.v[y2.x - 1] = ((3. / (x.v[x.x - 1] - x.v[x.x - 2])) * (YPN -
                                (y.v[y.x - 1] - y.v[y.x -  2]) / (x.v[x.x - 1] -
-                                    x.v[x.x - 2])) - qn * u[x.x - 2]) /         
+                                    x.v[x.x - 2])) - qn * u[x.x - 2]) /
                                              (qn * y2.v[y2.x - 2] + 1.);
     for (j = x.x - 2; j >= 0; j--) { // Backsubstitution loop
         y2.v[j] = y2.v[j] * y2.v[j + 1] + u[j];
@@ -522,9 +522,9 @@ vector polyfit(vector A, vector B, int order) {
     int j;
     int info;
     order++; // I find it intuitive this way...
-    double* Ap = malloc(sizeof(double) * order * A.x); // Build up the A matrix
-    for (i = 0; i < order; i++) {                      // as a vector in column-
-        for (j = 0; j < A.x; j++) {                    // major-order.
+    double* Ap = malloc(sizeof(double) * order * A.x); 
+    for (i = 0; i < order; i++) {                      
+        for (j = 0; j < A.x; j++) {                    
             Ap[i * A.x + j] = pow(A.v[j], order - i - 1); // Mimics MATLAB
         }
     }
@@ -537,6 +537,7 @@ vector polyfit(vector A, vector B, int order) {
     double* work = malloc(sizeof(double) * j);
     dgels_("N", &A.x, &order, &i, Ap, &B.x, Bp.v, &order, work, &j, &info);
     free(Ap);
+    free(work);
     if (info < 0) {
         fprintf(stderr, "LAPACK routine dgels() returns error: %d\n", info);
         exit(EXIT_FAILURE);
@@ -547,7 +548,7 @@ vector polyfit(vector A, vector B, int order) {
 }
 
 // given a vector of coefficients and a value for x, evaluate the polynomial
-double polyval(vector coefs, double val) { 
+double polyval(vector coefs, double val) {
     int i;                                 
     double sum = 0.;                       
     for (i = 0; i < coefs.x; i++) {

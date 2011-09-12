@@ -1,77 +1,77 @@
 /* Copyright (c) 2009-2011 Kyle Gorman
-*
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this software and associated documentation files (the "Software"), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-*
-*  The above copyright notice and this permission notice shall be included in
-*  all copies or substantial portions of the Software.
-*
-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*  THE SOFTWARE.
-*
-*  SWIPE' pitch estimator
-*  Camacho, Arturo. A sawtooth waveform inspired pitch estimator for speech   
-*  and music. Doctoral dissertation, University of Florida. 2007.             
-*  Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
-*
-*  HOW TO CITE:
-*
-*  Please cite this dissertation, and if possible include a footnote link to the
-*  source of this program, the most-recent version of which will always be at:
-*
-*  http://ling.upenn.edu/~kgorman/c/swipe/
-*
-*  This program depends on several free ("libre", not "gratuit") libraries. To 
-*  obtain them,  follow the instructions below for your platform.
-*
-*  LINUX:
-*
-*  All the large libraries should be available as packages if you're using a 
-*  "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
-*  9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), run (as superuser):
-*
-*  apt-get install libblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
-* 
-*  This installs the BLAS, (C)LAPACK, fftw3, and sndfile libraries. Installing 
-*  the most recent packages on a Fedora, Slackware, etc. should have a similar
-*  effect, assuming dependencies are satisfied in the process.
-*
-*  MAC OS X:
-*
-*  The linear algebra libraries ([C]LAPACK, a BLAS implementation) ship with Mac
-*  OS X. You will need to install the newest versions of fftw3 and libsndfile, 
-*  however. They are available for free online:
-*
-*  http://www.fftw.org/
-*  http://www.mega-nerd.com/libsndfile/
-*
-*  If you are superuser and wish to install globally the autoconf method
-*  should work fine:
-*
-*  tar -xvzf downloadedPackage.tar.gz
-*  cd folderOfPackageCreatedByTAR/
-*  ./configure; make; make install;
-*
-*  If you're not superuser, or don't want to install globally, make sure to 
-*  use '--prefix=PATH/TO/LOCATION' as an argument to 'configure'. You may 
-*  need to alter the #include statements as well. 
-*
-*  WINDOWS/CYGWIN:
-*
-*  Unsupported. Send details of any successes, however.
-*
-*  THANKS:
-*  Arturo Camacho, Stephen Isard, Mark Liberman, Chandan Narayan, Dan Swingley
-*/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to 
+ * deal in the Software without restriction, including without limitation the 
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * SWIPE' pitch estimator
+ * Camacho, Arturo. A sawtooth waveform inspired pitch estimator for speech   
+ * and music. Doctoral dissertation, University of Florida. 2007.             
+ * Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
+ * 
+ * HOW TO CITE:
+ *
+ * Please cite this dissertation, and if possible include a footnote link to 
+ * the following page:
+ *
+ * http://ling.upenn.edu/~kgorman/c/swipe/
+ *
+ * This program depends on several free ("libre", not "gratuit") libraries. 
+ * To obtain them,  follow the instructions below for your platform.
+ *
+ * LINUX:
+ *
+ * All the  libraries should be available as packages if you're using a 
+ * "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
+ * 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), run (as superuser):
+ *
+ * apt-get install libblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
+ * 
+ * This installs the BLAS, (C)LAPACK, fftw3, and sndfile libraries. Installing 
+ * the most recent packages on a Fedora, Slackware, etc. should have a similar
+ * effect, assuming dependencies are satisfied in the process.
+ *
+ * MAC OS X:
+ *
+ * The linear algebra libraries ([C]LAPACK, a BLAS implementation) ship with 
+ * Mac OS X. You will need to install the newest versions of fftw3 and 
+ * libsndfile, however. They are available for free online:
+ *
+ * http://www.fftw.org/
+ * http://www.mega-nerd.com/libsndfile/
+ *
+ * If you are superuser and wish to install globally the autoconf method
+ * should work fine:
+ *
+ * tar -xvzf downloadedPackage.tar.gz
+ * cd folderOfPackageCreatedByTAR/
+ * ./configure; make; make install;
+ *
+ * If you're not superuser, or don't want to install globally, make sure to 
+ * use '--prefix=PATH/TO/LOCATION' as an argument to 'configure'. You may 
+ * need to alter the #include statements as well. 
+ *
+ * WINDOWS/CYGWIN:
+ *
+ * Unsupported. Send details of any successes, however.
+ *
+ * THANKS:
+ * Arturo Camacho, Stephen Isard, Mark Liberman, Chandan Narayan, Dan Swingley
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -85,24 +85,23 @@
 
 #include "vector.h"  // comes with release
 
-#define NOK                          0
+#define NOK     0
 
-#define TRUE                         1
-#define FALSE                        0
+#define TRUE    1
+#define FALSE   0
 
-#define DERBS                        .1 
-#define POLYV                        .0013028 //  1 / 12 / 64 = 1 / 768
-#define DLOG2P                       .0104167 // 1/96
+#define DERBS   .1 
+#define POLYV   .0013028 //  1 / 12 / 64 = 1 / 768
+#define DLOG2P  .0104167 // 1/96
 
-#define ST                           .3  // Feel free to change these
-#define DT                           .001
-#define MIN                          100.
-#define MAX                          600.
-
-#define VNUM                         1.1 // Current version
+#define ST      .3  // Feel free to change these
+#define DT      .001
+#define MIN     100.
+#define MAX     600.
+#define VNUM    1.1 // Current version
 
 #ifndef NAN                          
-    #define NAN                      sqrt(-1.)
+    #define NAN sqrt(-1.)
 #endif
 
 #ifndef isnan
@@ -165,7 +164,8 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     int hi;
     int offset = 0;
     double td = nyquist / w2; // This is equivalent to fstep
-    // Testing showed this configuration of fftw to be fastest for speech-range 
+
+    // Testing showed this configuration of fftw to be fastest
     double* fi = fftw_malloc(sizeof(double) * w); 
     fftw_complex* fo = fftw_malloc(sizeof(fftw_complex) * w);
     fftw_plan plan = fftw_plan_dft_r2c_1d(w, fi, fo, FFTW_ESTIMATE); 
@@ -226,8 +226,8 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
 
 // Populates the strength matrix using the loudness matrix
 Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
-                                            double dt, double nyquist2, 
-                                              int lo, int hi, int psz, int w2) {
+                                       double dt, double nyquist2, int lo, 
+                                           int hi, int psz, int w2) {
     int i;
     int j;
     int k; 
@@ -247,7 +247,7 @@ Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
         for (j = 0; j < ps.x; j++) { 
             if PRIME(ps.v[j]) {
                 for (k = 0; k < kernel.x; k++) {
-                    td = fabs(q.v[k] - j - 1.); // Avoids calculating this twice
+                    td = fabs(q.v[k] - j - 1.); 
                     if (td < .25) { // Peaks
                         kernel.v[k] = cos(2. * M_PI * q.v[k]);
                     }
@@ -293,10 +293,10 @@ Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
     freem(Slocal);
 }
 
-// Helper function for populating the strength matrix for the left boundary case
-Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, 
-                                  intvector ws, intvector ps, double nyquist, 
-                                            double nyquist2, double dt, int n) {
+// Helper function for populating the strenght matrix on left boundary
+Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws, 
+                                        intvector ps, double nyquist, 
+                                        double nyquist2, double dt, int n) {
     int i; 
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -318,7 +318,7 @@ Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d,
 // Generic helper function for populating the strength matrix
 Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
                                 intvector ps, double nyquist, double nyquist2, 
-                                                             double dt, int n) {
+                                                          double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -441,7 +441,7 @@ vector swipe(char wav[], double min, double max, double st, double dt) {
         return(makev(0)); // This will be detected as an error
     }
     double nyquist = info.samplerate / 2.; 
-    double nyquist2 = info.samplerate; // Used so g.d. often here...
+    double nyquist2 = info.samplerate; 
     double nyquist16 = info.samplerate * 8.; 
     if (max > nyquist) { 
         max = nyquist;
@@ -458,7 +458,7 @@ vector swipe(char wav[], double min, double max, double st, double dt) {
     }
     vector pc = makev(ceil((log2(max) - log2(min)) / DLOG2P));
     vector d = makev(pc.x);
-    for (i = pc.x - 1; i >= 0; i--) { // Doing this bckwards saves a computation
+    for (i = pc.x - 1; i >= 0; i--) { 
         td = log2(min) + (i * DLOG2P);
         pc.v[i] = pow(2, td);
         d.v[i] = 1. + td - log2(nyquist16 / ws.v[0]); 
@@ -503,7 +503,7 @@ void printp(vector p, char out[], double dt, int mel, int vlo) {
     else {
         sink = fopen(out, "w");
         if (sink == NULL) {
-            fprintf(stderr, "File or stream %s not writable, aborting.\n", out);
+            fprintf(stderr, "File or stream %s unavailable, aborting.\n", out);
             exit(EXIT_FAILURE);
         }
     }
@@ -552,7 +552,7 @@ waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, University of Florida.\n\n\
 \tmore information: <http://ling.upenn.edu/~kgorman/c/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
-swipe [-i INPUT] [-b LIST] [-o OUTPUT] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
+swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
 -i FILE\t\tinput file\t\t\t\t\tSTDIN\n\
 -o FILE\t\toutput file\t\t\t\t\tSTDOUT\n\
@@ -632,7 +632,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
         st = ST;
     }
     if (dt < .001) {
-        fprintf(stderr, "Timestep must be >= 0.001 (1 ms), set to %.3f.\n", DT);
+        fprintf(stderr, "Timestep must be >= 0.001, set to %.3f.\n", DT);
         dt = DT;
     }
     if (batch != NULL) { // Iterate through batch pairs
