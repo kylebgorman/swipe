@@ -21,7 +21,6 @@
 *  vector: some data structures for swipe
 *  Kyle Gorman <kgorman@ling.upenn.edu>
 *
-*  This is version 1.0., i.e. I think I got all obvious stuff working ideally.
 */
 
 // vector stuff

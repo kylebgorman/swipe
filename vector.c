@@ -1,4 +1,5 @@
 /* Copyright (c) 2009-2011 Kyle Gorman
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to 
  * deal in the Software without restriction, including without limitation the 
@@ -25,7 +26,7 @@
  *
  * http://ling.upenn.edu/~kgorman/c/vector.h       
  * 
- * This is version 1.0., i.e. I think I got all obvious stuff working ideally. 
+ * This is version 1.2., i.e. I think I got all obvious stuff working ideally. 
  */
 
 #include <math.h>

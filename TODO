@@ -1,3 +1,5 @@
-8/1/09 <kgorman@ling.upenn.edu>
+9/9/11 <kgorman@ling.upenn.edu
+- doctests for the Python module
+- convert the Python module to use the swipe() function in swipe.c directly
 - reconsider the use of pci; maybe do it with a slicing function
-- is the NAN-for-linterp thing necessary? 
+- is the NAN-for-linterp thing necessary?
