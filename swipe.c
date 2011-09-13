@@ -98,7 +98,7 @@
 #define DT      .001
 #define MIN     100.
 #define MAX     600.
-#define VNUM    1.1 // Current version
+#define VNUM    1.2 // Current version
 
 #ifndef NAN                          
     #define NAN sqrt(-1.)
