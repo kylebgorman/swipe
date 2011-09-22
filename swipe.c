@@ -17,60 +17,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- *
- * SWIPE' pitch estimator
- * Camacho, Arturo. A sawtooth waveform inspired pitch estimator for speech   
- * and music. Doctoral dissertation, University of Florida. 2007.             
- * Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
  * 
- * HOW TO CITE:
- *
- * Please cite this dissertation, and if possible include a footnote link to 
- * the following page:
- *
- * http://ling.upenn.edu/~kgorman/c/swipe/
- *
- * This program depends on several free ("libre", not "gratuit") libraries. 
- * To obtain them,  follow the instructions below for your platform.
- *
- * LINUX:
- *
- * All the  libraries should be available as packages if you're using a 
- * "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
- * 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), run (as superuser):
- *
- * apt-get install libblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
- * 
- * This installs the BLAS, (C)LAPACK, fftw3, and sndfile libraries. Installing 
- * the most recent packages on a Fedora, Slackware, etc. should have a similar
- * effect, assuming dependencies are satisfied in the process.
- *
- * MAC OS X:
- *
- * The linear algebra libraries ([C]LAPACK, a BLAS implementation) ship with 
- * Mac OS X. You will need to install the newest versions of fftw3 and 
- * libsndfile, however. They are available for free online:
- *
- * http://www.fftw.org/
- * http://www.mega-nerd.com/libsndfile/
- *
- * If you are superuser and wish to install globally the autoconf method
- * should work fine:
- *
- * tar -xvzf downloadedPackage.tar.gz
- * cd folderOfPackageCreatedByTAR/
- * ./configure; make; make install;
- *
- * If you're not superuser, or don't want to install globally, make sure to 
- * use '--prefix=PATH/TO/LOCATION' as an argument to 'configure'. You may 
- * need to alter the #include statements as well. 
- *
- * WINDOWS/CYGWIN:
- *
- * Unsupported. Send details of any successes, however.
- *
- * THANKS:
- * Arturo Camacho, Stephen Isard, Mark Liberman, Chandan Narayan, Dan Swingley
+ * swipe.c: primary functions
  */
 
 #include <math.h>
@@ -174,9 +122,7 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
         hann.v[i] = .5 - (.5 * cos(2. * M_PI * ((double) i / w)));
     }
     vector f = makev(w2);
-    for (i = 0; i < w2; i++) { 
-        f.v[i] = i * td;
-    }
+    for (i = 0; i < w2; i++) f.v[i] = i * td;
     hi = bisectv(f, fERBs.v[0]); // All calls to La() will begin here
     matrix L = makem(ceil((double) x.x / w2) + 1, fERBs.x); 
     for (j = 0; j < w2; j++) { // Left boundary case
@@ -187,9 +133,7 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     }
     La(L, f, fERBs, plan, fo, w2, hi, 0); 
     for (i = 1; i < L.x - 2; i++) { // Middle case 
-        for (j = 0; j < w; j++) {
-            fi[j] = x.v[j + offset] * hann.v[j];
-        }
+        for (j = 0; j < w; j++) fi[j] = x.v[j + offset] * hann.v[j];
         La(L, f, fERBs, plan, fo, w2, hi, i); 
         offset += w2;
     }
@@ -208,14 +152,10 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     // L must now be normalized
     for (i = 0; i < L.x; i++) { 
         td = 0.; // td is the value of the normalization factor
-        for (j = 0; j < L.y; j++) { 
-            td += L.m[i][j] * L.m[i][j];
-        }
+        for (j = 0; j < L.y; j++) td += L.m[i][j] * L.m[i][j];
         if (td != 0.) { // Catches zero-division
             td = sqrt(td);
-            for (j = 0; j < L.y; j++) {
-                L.m[i][j] /= td;
-            }
+            for (j = 0; j < L.y; j++) L.m[i][j] /= td;
         } // Otherwise, it is already 0.
     } 
     fftw_destroy_plan(plan); 
@@ -225,9 +165,10 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
 }
 
 // Populates the strength matrix using the loudness matrix
-Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
-                                       double dt, double nyquist2, int lo, 
-                                           int hi, int psz, int w2) {
+void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, 
+                                            intvector ps, double dt, 
+                                                double nyquist2, int lo, 
+                                                    int hi, int psz, int w2) {
     int i;
     int j;
     int k; 
@@ -239,9 +180,7 @@ Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
     matrix Slocal = zerom(psz, L.x);
     for (i = 0; i < Slocal.x; i++) {
         vector q = makev(fERBs.x);
-        for (j = 0; j < q.x; j++) {
-            q.v[j] = fERBs.v[j] / pci.v[i];
-        }
+        for (j = 0; j < q.x; j++) q.v[j] = fERBs.v[j] / pci.v[i];
         plim = floor((fERBs.v[fERBs.x - 1] / pci.v[i]) - .75);
         vector kernel = zerov(fERBs.x); // A zero-filled kernel vector
         for (j = 0; j < ps.x; j++) { 
@@ -261,9 +200,7 @@ Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
         td = 0.; 
         for (j = 0; j < kernel.x; j++) {
             kernel.v[j] *= sqrt(1. / fERBs.v[j]); // Applying the envelope
-            if (kernel.v[j] > 0.) { 
-                td += kernel.v[j] * kernel.v[j];
-            }
+            if (kernel.v[j] > 0.) td += kernel.v[j] * kernel.v[j];
         }
         td = sqrt(td); // Now, td is the p=2 norm factor
         for (j = 0; j < kernel.x; j++) { // Normalize the kernel
@@ -294,9 +231,10 @@ Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, intvector ps,
 }
 
 // Helper function for populating the strenght matrix on left boundary
-Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws, 
-                                        intvector ps, double nyquist, 
-                                        double nyquist2, double dt, int n) {
+void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, 
+                                           intvector ws, intvector ps, 
+                                               double nyquist, double nyquist2,
+                                                  double dt, int n) {
     int i; 
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -305,7 +243,7 @@ Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
     int psz = hi - lo;
     vector mu = makev(psz);
     vector pci = makev(psz);
-    for (i = 0; i < hi; i++) { 
+    for (i = 0; i < hi; i++) {
         pci.v[i] = pc.v[i];
         mu.v[i] = 1. - fabs(d.v[i] - 1.);
     } // End of Sfirst-specific code
@@ -316,7 +254,7 @@ Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
 }
 
 // Generic helper function for populating the strength matrix
-Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
+void Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
                                 intvector ps, double nyquist, double nyquist2, 
                                                           double dt, int n) {
     int i;
@@ -340,9 +278,9 @@ Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
 }
 
 // Helper function for populating the strength matrix from the right boundary
-Slast(matrix S, vector x, vector pc, vector fERBs, vector d, 
-                                 intvector ws, intvector ps, double nyquist, 
-                                            double nyquist2, double dt, int n) {
+void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
+                               intvector ps, double nyquist, double nyquist2, 
+                                                           double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -367,7 +305,7 @@ Slast(matrix S, vector x, vector pc, vector fERBs, vector d,
 vector pitch(matrix S, vector pc, double st) {
     int i;
     int j;
-    int maxi; 
+    int maxi;
     int search = (int) round((log2(pc.v[2]) - log2(pc.v[0])) / POLYV + 1.);
     double nftc; 
     double maxv;
@@ -382,16 +320,14 @@ vector pitch(matrix S, vector pc, double st) {
     vector p = makev(S.y);  
     for (j = 0; j < S.y; j++) {
         maxv = SHRT_MIN;  
-        for (i = 0; i < S.x; i++) { 
+        for (i = 0; i < S.x; i++) {
             if (S.m[i][j] > maxv) {
                 maxv = S.m[i][j];
                 maxi = i;
             }
         }
         if (maxv > st) { // Make sure it's big enough
-            if (maxi == 0 || maxi == S.x - 1) { // First or last? 
-                p.v[j] = pc.v[0];
-            }
+            if (maxi == 0 || maxi == S.x - 1) p.v[j] = pc.v[0];
             else { // Generic case
                 tc2 = 1. / pc.v[maxi];
                 log2pc = log2(pc.v[maxi - 1]); 
@@ -412,9 +348,7 @@ vector pitch(matrix S, vector pc, double st) {
                 p.v[j] = pow(2, log2pc + (maxi * POLYV));
             }
         }
-        else { // If not voiced during that interval, then...
-            p.v[j] = NAN;
-        } 
+        else p.v[j] = NAN;
     }
     freev(ntc);
     freev(s);
@@ -428,28 +362,24 @@ vector swipe(char wav[], double min, double max, double st, double dt) {
     FILE* wavf; 
     SF_INFO info;
     SNDFILE* source;
-    if (strcmp(wav, "<STDIN>") == 0) { // i.e., is coming from STDIN
-        wavf = stdin;
-    }
-    else { // is specified
-        wavf = fopen(wav, "r");
-    }
+    if (strcmp(wav, "<STDIN>") == 0) wavf = stdin;
+    else wavf = fopen(wav, "r");
     source = sf_open_fd(fileno(wavf), SFM_READ, &info, TRUE);
     // Perform checks on the wav header
     if (info.sections < 1) {
-        fprintf(stderr, "File or stream %s not read as audio ... \n", wav);
-        return(makev(0)); // This will be detected as an error
+        fprintf(stderr, "File or stream %s not read as audio...\n", wav);
+        return(makev(0)); // later detected as a failure...
     }
     double nyquist = info.samplerate / 2.; 
     double nyquist2 = info.samplerate; 
     double nyquist16 = info.samplerate * 8.; 
     if (max > nyquist) { 
         max = nyquist;
-        fprintf(stderr, "Max pitch > Nyquist ... max set to %.2f Hz.\n", max);
+        fprintf(stderr, "Max pitch > Nyquist...max set to %.2f Hz.\n", max);
     }
     if (dt > nyquist2) {
         dt = nyquist2;
-        fprintf(stderr, "Timestep > SR ... timestep set to %f.\n", nyquist2);
+        fprintf(stderr, "Timestep > SR...timestep set to %f.\n", nyquist2);
     }
     intvector ws = makeiv(round(log2((nyquist16) / min) -  
                                 log2((nyquist16) / max)) + 1); 
@@ -469,9 +399,7 @@ vector swipe(char wav[], double min, double max, double st, double dt) {
     vector fERBs = makev(ceil((hz2erb(nyquist) - 
                                hz2erb(pow(2, td) / 4)) / DERBS));
     td = hz2erb(min / 4.);
-    for (i = 0; i < fERBs.x; i++) { 
-        fERBs.v[i] = erb2hz(td + (i * DERBS));
-    }
+    for (i = 0; i < fERBs.x; i++) fERBs.v[i] = erb2hz(td + (i * DERBS));
     intvector ps = onesiv(floor(fERBs.v[fERBs.x - 1] / pc.v[0] - .75));
     sieve(ps);
     ps.v[0] = P; // Hack to make 1 "act" prime...don't ask 
@@ -497,9 +425,7 @@ void printp(vector p, char out[], double dt, int mel, int vlo) {
     int i;
     double t = 0.; 
     FILE* sink; // Handle for printing to file/STDOUT
-    if (strcmp(out, "<STDOUT>") == 0) {
-        sink = stdout;
-    }
+    if (strcmp(out, "<STDOUT>") == 0) sink = stdout;
     else {
         sink = fopen(out, "w");
         if (sink == NULL) {
@@ -637,7 +563,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     }
     if (batch != NULL) { // Iterate through batch pairs
         while (fscanf(batch, "%s %s", wav, out) != EOF) {
-            fprintf(stderr, "%s -> %s ... ", wav, out);
+            fprintf(stderr, "%s -> %s...", wav, out);
             vector p = swipe(wav, min, max, st, dt);
             if (p.x == NOK) {
                 fprintf(stderr, "File or stream %s failed.\n", wav);
@@ -659,9 +585,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
             fprintf(stderr, "File or stream %s failed.\n", wav);
             exit(EXIT_FAILURE);
         }
-        else {
-            printp(p, out, dt, mel, vlo); 
-        } 
+        else printp(p, out, dt, mel, vlo); 
         freev(p);
     }
     exit(EXIT_SUCCESS);

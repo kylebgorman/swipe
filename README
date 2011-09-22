@@ -24,4 +24,4 @@ All mono-channel audio recognized by libsndfile is accepted. For a list, see:
 
 MISCELLANY:
 
-A Python wrapper, swipe.py, is also included. See it for some sample usage. If you are processing a lot of files, it may make more sense to simply run it in batch mode. I also included the original MATLAB code from Camacho as swipe.m. 
+I also included the original MATLAB code from Camacho as swipe.m. 

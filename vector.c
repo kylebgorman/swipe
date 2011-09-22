@@ -18,15 +18,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  * 
- * vector: some data structures and mathematical function
- * Kyle Gorman <kgorman@ling.upenn.edu>
- * 
- * If for some reason you didn't get vector.h, which you'll need to #include 
- * vector, it is available at:
- *
- * http://ling.upenn.edu/~kgorman/c/vector.h       
- * 
- * This is version 1.2., i.e. I think I got all obvious stuff working ideally. 
+ * vector.c: some data structures and mathematical function
  */
 
 #include <math.h>
@@ -102,7 +94,7 @@ void printv(vector yr_vector) {
 // return the index of the maximum value of the vector
 int maxv(vector yr_vector) {
     int i;
-    int index;
+    int index = -1;
     double val = SHRT_MIN;
     for (i = 0; i < yr_vector.x; i++) {
         if (yr_vector.v[i] > val) {
@@ -116,7 +108,7 @@ int maxv(vector yr_vector) {
 // return the index of the minimum value of the vector
 int minv(vector yr_vector) { 
     int i;
-    int index;
+    int index = -1;
     double val = SHRT_MAX;
     for (i = 0; i < yr_vector.x; i++) {
         if (yr_vector.v[i] < val) {
@@ -193,7 +185,6 @@ intvector onesiv(int xSz) {
 }
 
 intvector copyiv(intvector yr_vector) { 
-    int i;
     intvector nw_vector = makeiv(yr_vector.x);
     memcpy(nw_vector.v, yr_vector.v, sizeof(int) * nw_vector.x);
     return(nw_vector);
@@ -222,7 +213,7 @@ void printiv(intvector yr_vector) {
 
 int maxiv(intvector yr_vector) { 
     int i;
-    int index;
+    int index = -1;
     int val = SHRT_MIN;
     for (i = 0; i < yr_vector.x; i++) {
         if (yr_vector.v[i] > val) {
@@ -235,7 +226,7 @@ int maxiv(intvector yr_vector) {
 
 int miniv(intvector yr_vector) {
     int i;
-    int index;
+    int index = -1;
     int val = SHRT_MAX;
     for (i = 0; i < yr_vector.x; i++) {
         if (yr_vector.v[i] < val) {
@@ -412,6 +403,7 @@ matrix im2m(intmatrix yr_matrix) {
             nw_matrix.m[i][j] = yr_matrix.m[i][j]; 
         }
     }
+    return(nw_matrix);
 }
 
 void freeim(intmatrix yr_matrix) {
@@ -476,7 +468,6 @@ vector spline(vector x, vector y) {
     int i;
     int j;
     double p;
-    double un;
     double qn;
     double sig;
     vector y2 = makev(x.x);
