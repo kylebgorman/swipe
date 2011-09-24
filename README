@@ -56,4 +56,12 @@ All mono-channel audio recognized by libsndfile is accepted. For a list, see:
 
 MISCELLANY:
 
-I also included the original MATLAB code from Camacho as swipe.m. 
+I also included the original MATLAB code from Camacho as swipe.m. There is also a Python module which calls the swipe code directly. It is specified as foll
+
+ swipe.pitch: (path, pmin=100., pmax=600., 
+│       s=.3, t=0.001, show_nan=False)                        │
+│ Attempts to read a wav file from path (which is either a fil│
+│                                                             │
+│ object or a                                                 │
+│ string path to the file, and returns a list of [(time,      │
+│ value)] pairs.     

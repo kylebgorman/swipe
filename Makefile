@@ -6,7 +6,7 @@ prefix=/usr/local
 all: swipe python
 
 swipe: swipe.c vector.c	
-	$(CC) $(CFLAGS) -g -o $(target) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+	$(CC) $(CFLAGS) -o $(target) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
 python:
 	swig -python swipe.i
