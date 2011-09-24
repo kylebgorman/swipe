@@ -48,19 +48,19 @@
 #define MAX     600.
 #define VNUM    1.2 // Current version
 
-#ifndef NAN                          
+#ifndef NAN
     #define NAN sqrt(-1.)
 #endif
 
 #ifndef isnan
 int isnan(double x) { 
-    return(x !=x);
+    return(x != x);
 }
 #endif
 
 #ifndef log2
 double log2(double x) { // A base-2 log function
-    return(log(x) / log(2.));
+    return log(x) / log(2.);
 }
 #endif
 
@@ -144,7 +144,7 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
         for (/* j = x.x - offset */; j < w; j++) {
             fi[j] = 0.; // Once again, 0. * hann.v[j] 
         }
-        La(L, f, fERBs, plan, fo, w2, hi, i); 
+        La(L, f, fERBs, plan, fo, w2, hi, i);
         offset += w2;
     } // Now L is fully valued
     freev(hann);
@@ -305,7 +305,7 @@ void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
 vector pitch(matrix S, vector pc, double st) {
     int i;
     int j;
-    int maxi;
+    int maxi = -1;
     int search = (int) round((log2(pc.v[2]) - log2(pc.v[0])) / POLYV + 1.);
     double nftc; 
     double maxv;
@@ -356,18 +356,12 @@ vector pitch(matrix S, vector pc, double st) {
 }
 
 // Primary utility function for each pitch extraction
-vector swipe(char wav[], double min, double max, double st, double dt) {
+vector swipe(int fid, double min, double max, double st, double dt) {
     int i; 
-    double td;
-    FILE* wavf; 
+    double td = 0.;
     SF_INFO info;
-    SNDFILE* source;
-    if (strcmp(wav, "<STDIN>") == 0) wavf = stdin;
-    else wavf = fopen(wav, "r");
-    source = sf_open_fd(fileno(wavf), SFM_READ, &info, TRUE);
-    // Perform checks on the wav header
-    if (info.sections < 1) {
-        fprintf(stderr, "File or stream %s not read as audio...\n", wav);
+    SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, TRUE);
+    if (source == NULL || info.sections < 1) {
         return(makev(0)); // later detected as a failure...
     }
     double nyquist = info.samplerate / 2.; 
@@ -421,18 +415,11 @@ vector swipe(char wav[], double min, double max, double st, double dt) {
 }
 
 // Function for printing the pitch vector returned by swipe()
-void printp(vector p, char out[], double dt, int mel, int vlo) {
+
+void printp(vector p, int fid, double dt, int mel, int vlo) {
     int i;
     double t = 0.; 
-    FILE* sink; // Handle for printing to file/STDOUT
-    if (strcmp(out, "<STDOUT>") == 0) sink = stdout;
-    else {
-        sink = fopen(out, "w");
-        if (sink == NULL) {
-            fprintf(stderr, "File or stream %s unavailable, aborting.\n", out);
-            exit(EXIT_FAILURE);
-        }
-    }
+    FILE* sink = fdopen(fid, "w");
     if (mel) {
         if (vlo) {
             for (i = 0; i < p.x; i++) {
@@ -458,14 +445,11 @@ void printp(vector p, char out[], double dt, int mel, int vlo) {
         }
         else { 
             for (i = 0; i < p.x; i++) {
-                if (!isnan(p.v[i])) {
-                    fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]); 
-                }
+                if (!isnan(p.v[i])) fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]); 
                 t += dt;
             }
         }
     } 
-    fclose(sink); 
 }
 
 // Main method, interfacing with user arguments
@@ -499,15 +483,15 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     double max = MAX; 
     int ch;
     FILE* batch = NULL; // not going to be read that way,
-    char wav[FILENAME_MAX] = "<STDIN>";
-    char out[FILENAME_MAX] = "<STDOUT>";
+    char wav[FILENAME_MAX]; // "<STDIN>";
+    char out[FILENAME_MAX]; // "<STDOUT>";
     while ((ch = getopt(argc, argv, "i:o:r:s:t:b:mnhv")) != -1) {
         switch(ch) {
             case 'b':
-                batch = fopen(optarg, "rt"); 
+                batch = fopen(optarg, "r"); 
                 break;
             case 'i':
-                strcpy(wav, optarg); 
+                strcpy(wav, optarg);
                 break; 
             case 'o':
                 strcpy(out, optarg); 
@@ -564,28 +548,62 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     if (batch != NULL) { // Iterate through batch pairs
         while (fscanf(batch, "%s %s", wav, out) != EOF) {
             fprintf(stderr, "%s -> %s...", wav, out);
-            vector p = swipe(wav, min, max, st, dt);
+            FILE* wf = fopen(wav, "r");
+            if (wf == NULL) {
+                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
+                exit(EXIT_FAILURE);
+            }
+            vector p = swipe(fileno(wf), min, max, st, dt);
+            fclose(wf);
             if (p.x == NOK) {
-                fprintf(stderr, "File or stream %s failed.\n", wav);
+                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
                 fclose(batch); 
                 exit(EXIT_FAILURE);
             }
             else {
-                printp(p, out, dt, mel, vlo);
+                FILE* output = fopen(out, "w");
+                if (output == NULL) {
+                    fprintf(stderr, "Writing to \"%s\" failed.\n", out);
+                    exit(EXIT_FAILURE);
+                }
+                printp(p, fileno(output), dt, mel, vlo);
                 printf("done.\n");
+                fclose(output);
             }
             freev(p);
         }
         fclose(batch);
-        exit(EXIT_SUCCESS);
     }
     else {
-        vector p = swipe(wav, min, max, st, dt);
+        vector p;
+        if (*wav == '\0') {
+            p = swipe(fileno(stdin), min, max, st, dt);
+            strcpy(wav, "<STDIN>"); // no buffer overflows!
+        }
+        else {
+            FILE* input = fopen(wav, "r");
+            if (input == NULL) {
+                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
+                exit(EXIT_FAILURE);
+            }
+            p = swipe(fileno(input), min, max, st, dt);
+        }
         if (p.x == NOK) {
-            fprintf(stderr, "File or stream %s failed.\n", wav);
+            if (*wav == '\0') fprintf(stderr, "Reading from STDIN failed.\n");
+            else fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
             exit(EXIT_FAILURE);
         }
-        else printp(p, out, dt, mel, vlo); 
+        else {
+            if (*out == '\0') printp(p, fileno(stdout), dt, mel, vlo);
+            else {
+                FILE* output = fopen(out, "w");
+                if (output == NULL) {
+                    fprintf(stderr, "Writing to \"%s\" failed", out);
+                    exit(EXIT_FAILURE);
+                }
+                printp(p, fileno(output), dt, mel, vlo);
+            }
+        }
         freev(p);
     }
     exit(EXIT_SUCCESS);

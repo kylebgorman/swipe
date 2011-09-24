@@ -3,21 +3,19 @@
 target=swipe
 prefix=/usr/local
 
-all: swipe 
-#python
+all: swipe python
 
 swipe: swipe.c vector.c	
-	$(CC) $(CFLAGS) -o $(target) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile -Doldmain=main
+	$(CC) $(CFLAGS) -g -o $(target) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
-#python:
-	#swig -python swipe.i
-	#python setup.py build_ext --inplace
+python:
+	swig -python swipe.i
+	python setup.py -q build
 
 install: swipe
 	install swipe $(prefix)/bin
-	#install _swipe.so ?
-	#install _swipe.py ?
-	#install _swipe.pyc ?
+	python setup.py -q install
 
 clean: 
-	rm -f $(target) swipe_wrap.c swipe.py swipe.pyc _swipe.so
+	python setup.py clean
+	rm -rf $(target) swipe_wrap.c swipe.py swipe.pyc _swipe.so build/

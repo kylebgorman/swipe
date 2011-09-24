@@ -23,4 +23,4 @@
 
 #include "vector.h"
 
-vector swipe(char[], double, double, double, double);
+vector swipe(int, double, double, double, double);

@@ -28,10 +28,19 @@
 
 %pythoncode %{
 def pitch(path, pmin=100., pmax=600., s=.3, t=0.001):
-    f = path if isinstance(path, str) else path.name
-    return swipe(f, pmin, pmax, s, t)
+    # I can't pass a Python file reference to C: get Python file object
+    try: 
+        f = open(path, 'r') if isinstance(path, str) else path
+        # Obtain the vector itself
+        p = swipe(f.fileno(), pmin, pmax, s, t)
+        # Now get the Python out...
+        f.close()
+        return p # (FIXME)
+    except IOError, e:
+        from sys import stderr
+        stderr.write(str(e) + '\n')
 %}
 
 typedef struct { int x; double* v; } vector;
 
-vector swipe(char wav[], double min, double max, double st, double dt);
+vector swipe(int fid, double min, double max, double st, double dt);
