@@ -23,4 +23,4 @@
 
 #include "vector.h"
 
-vector swipe(int, double, double, double, double);
+vector pyswipe(char[], double, double, double, double);

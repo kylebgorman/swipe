@@ -21,26 +21,47 @@
  * swipe.i: SWIG file for python module
  */
 
+%include "carrays.i"
+%array_functions(double, doublea);
+
 %module swipe %{
 #define SWIG_FILE_WITH_INIT
 #include "swipe.h"
 %}
 
 %pythoncode %{
-def pitch(path, pmin=100., pmax=600., s=.3, t=0.001):
-    # I can't pass a Python file reference to C: get Python file object
+def pitch(path, pmin=100., pmax=600., s=.3, t=0.001, show_nan=False):
+    """
+    Attempts to read a wav file from path (which is either a file object or a 
+    string path to the file, and returns a list of [(time, value)] pairs.
+    """
     try: 
-        f = open(path, 'r') if isinstance(path, str) else path
+        # Get Python path, just in case someone passed a file object
+        #FIXME f = open(path, 'r') if isinstance(path, str) else path
+        f = path if isinstance(path, str) else path.name
         # Obtain the vector itself
-        p = swipe(f.fileno(), pmin, pmax, s, t)
-        # Now get the Python out...
-        f.close()
-        return p # (FIXME)
+        P = pyswipe(f, pmin, pmax, s, t)
+        # get the length and allocate
+        tt = 0.
+        results = [] 
+        if show_nan:
+            for i in range(P.x):
+                results.append((tt, doublea_getitem(P.v, i)))
+                tt += t
+        else:
+            from math import isnan
+            for i in range(P.x):
+                val = doublea_getitem(P.v, i)
+                if not isnan(val):
+                    results.append((tt, doublea_getitem(P.v, i)))
+                tt += t
+        return results
+
     except IOError, e:
         from sys import stderr
         stderr.write(str(e) + '\n')
+        return
 %}
 
 typedef struct { int x; double* v; } vector;
-
-vector swipe(int fid, double min, double max, double st, double dt);
+vector pyswipe(char wav[], double min, double max, double st, double dt);

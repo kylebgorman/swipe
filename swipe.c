@@ -21,6 +21,8 @@
  * swipe.c: primary functions
  */
 
+#define VNUM    1.3 // Current version
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -46,7 +48,6 @@
 #define DT      .001
 #define MIN     100.
 #define MAX     600.
-#define VNUM    1.2 // Current version
 
 #ifndef NAN
     #define NAN sqrt(-1.)
@@ -412,6 +413,10 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     freev(pc);
     freem(S);
     return(p);
+}
+
+vector pyswipe(char wav[], double min, double max, double st, double dt) {
+    return swipe(fileno(fopen(wav, "r")), min, max, st, dt);
 }
 
 // Function for printing the pitch vector returned by swipe()
