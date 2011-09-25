@@ -10,7 +10,7 @@ swipe: swipe.c vector.c
 
 compilepython:
 	swig -python swipe.i
-	python setup.py -q build
+	python setup.py -q build 
 
 python:
 	python setup.py -q build
@@ -21,4 +21,4 @@ install: swipe
 
 clean: 
 	python setup.py clean
-	rm -rf $(target) swipe.py swipe.pyc _swipe.so build/
+	rm -rf $(target) swipe.pyc _swipe.so build/

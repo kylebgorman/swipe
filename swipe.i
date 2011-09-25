@@ -89,6 +89,8 @@ class Swipe(object):
         tt = 0.
         self.t = []
         self.p = []
+        if P.x < 1: 
+            raise ValueError('Failed to read audio')
         for i in range(P.x):
             val = doublea_getitem(P.v, i)
             if not isnan(val):
@@ -182,37 +184,6 @@ class Swipe(object):
             return _regress(self.t[i:j], self.p[i:j])
         else:
             return _regress(self.t, self.p)
-
-"""
-def pitch(path, pmin=100., pmax=600., st=.3, dt=0.001, mel=False):
-        from sys import stderr
-        from math import log, sqrt, fsum, isnan
-        try:
-            # Get Python path, just in case someone passed a file object
-            f = path if isinstance(path, str) else path.name
-            # Obtain the vector itself
-            P = pyswipe(f, pmin, pmax, st, dt)
-            # get function
-            #conv = None
-            #if mel: conv = lambda hz: 1127.01048 * log(1. + hz / 700.)
-            #else: conv = lambda hz: hz
-            # generate
-            tt = 0.
-            t = []
-            p = []
-            for i in range(P.x):
-                t.append(tt)
-                val = doublea_getitem(P.v, i)
-                if not isnan(val):
-                    t.append(tt)
-                    #p.append(conv(doublea_getitem(P.v, i)))
-                    p.append(doublea_getitem(P.v, i))
-                tt += dt
-            return 
-        except IOError, e:
-            stderr.write(str(e) + '\n')
-            return
-"""
 %}
 
 typedef struct { int x; double* v; } vector;

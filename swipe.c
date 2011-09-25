@@ -488,8 +488,13 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     double max = MAX; 
     int ch;
     FILE* batch = NULL; // not going to be read that way,
-    char wav[FILENAME_MAX]; // "<STDIN>";
-    char out[FILENAME_MAX]; // "<STDOUT>";
+    /* 
+     * initialize the char[] as "\0"-initial. This is done automatically by 
+     * standard Linux tools, but not by Mac OS X, which doesn't actually put a
+     * terminator on an empty char[] when declared. 
+     */
+    char wav[FILENAME_MAX] = "\0";
+    char out[FILENAME_MAX] = "\0";
     while ((ch = getopt(argc, argv, "i:o:r:s:t:b:mnhv")) != -1) {
         switch(ch) {
             case 'b':
@@ -599,7 +604,9 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
             exit(EXIT_FAILURE);
         }
         else {
-            if (*out == '\0') printp(p, fileno(stdout), dt, mel, vlo);
+            if (*out == '\0') {
+                printp(p, fileno(stdout), dt, mel, vlo);
+            }
             else {
                 FILE* output = fopen(out, "w");
                 if (output == NULL) {
