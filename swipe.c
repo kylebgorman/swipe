@@ -490,8 +490,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     FILE* batch = NULL; // not going to be read that way,
     /* 
      * initialize the char[] as "\0"-initial. This is done automatically by 
-     * standard Linux tools, but not by Mac OS X, which doesn't actually put a
-     * terminator on an empty char[] when declared. 
+     * Linux tools, but not always by Mac OS X, I find.
      */
     char wav[FILENAME_MAX] = "\0";
     char out[FILENAME_MAX] = "\0";
