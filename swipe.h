@@ -19,6 +19,7 @@
 *  IN THE SOFTWARE.
 *
 *  swipe.h: header for SWIG 
+*  Kyle Gorman
 */
 
 #include "vector.h"

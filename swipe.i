@@ -18,7 +18,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * swipe.i: SWIG file for python module
+ * swipe.i: SWIG file for Python module
+ * Kyle Gorman, with some Python function suggestions from Josef Fruehwald.
  */
 
 %include "carrays.i"
@@ -31,8 +32,8 @@
 
 %pythoncode %{
 import numpy as NP
-from math import log, fsum, isnan
-from bisect import bisect_left
+from bisect import bisect
+from math import log, fsum, isnan, sqrt
 
 ## helper functions
 
@@ -46,7 +47,7 @@ def _var(x):
     """
     Compute the variance of x 
     """
-    my_mean = mean(x)
+    my_mean = _mean(x)
     s = 0.
     for i in x:
         s += (i - my_mean) ** 2
@@ -121,7 +122,7 @@ class Swipe(object):
 
     def _bisect(self, tmin=None, tmax=None):
         """ 
-        Helper for bisection
+        Helper for bisection, but is a instance method
         """
         if not tmin:
             if not tmax:
@@ -150,9 +151,9 @@ class Swipe(object):
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            return mean(self.p[i:j])
+            return _mean(self.p[i:j])
         else:
-            return mean(self.p)
+            return _mean(self.p)
 
     def var(self, tmin=None, tmax=None):
         """ 
@@ -160,9 +161,9 @@ class Swipe(object):
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            return var(self.p[i:j])
+            return _var(self.p[i:j])
         else:
-            return var(self.p)
+            return _var(self.p)
 
     def sd(self, tmin=None, tmax=None):
         """ 

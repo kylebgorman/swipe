@@ -1,24 +1,34 @@
-# Python support isn't QUITE ready yet.
+# Hand-crafted Makefile
+# Kyle Gorman
+# 
+# By default, "make; make install" gives you Python support. If you don't want 
+# this, then you can run "make c; make installc". If you want control the 
+# installation root (e.g., /, /usr, /usr/local), set the $PREFIX environmental
+# variable. "bin" is appended automatically. Similarly, you can make a binary
+# called something other than "swipe" by setting the $TARGET environmental
+# variable.
 
-target=swipe
-prefix=/usr/local
+TARGET?=swipe
+PREFIX?=/usr/local
 
-all: swipe python
+all: c py
+install: installc installpy
 
-swipe: swipe.c vector.c	
-	$(CC) $(CFLAGS) -o $(target) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+c: swipe.c vector.c
+	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
-compilepython:
+installc: c
+	install swipe $(PREFIX)/bin
+
+swigpy:
 	swig -python swipe.i
-	python setup.py -q build 
 
-python:
+py:
 	python setup.py -q build
 
-install: swipe
-	install swipe $(prefix)/bin
+installpy: py
 	python setup.py -q install
 
-clean: 
+clean:
 	python setup.py clean
-	rm -rf $(target) swipe.pyc _swipe.so build/
+	rm -rf $(TARGET) swipe.pyc _swipe.so build/

@@ -21,6 +21,7 @@
 # IN THE SOFTWARE.
 # 
 # setup.py: for building SWIG bridge to Python
+# Kyle Gorman
 
 from distutils.core import setup, Extension
 

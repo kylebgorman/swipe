@@ -18,7 +18,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  * 
- * vector.c: some data structures and mathematical function
+ * vector.c: vector and matrix data structures and lots of numerical functions
+ * Kyle Gorman
  */
 
 #include <math.h>

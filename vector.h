@@ -18,7 +18,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  * 
- * vector.h: header for vector functions ("constructors" mostly)
+ * vector.h: header for vector.c
+ * Kyle Gorman
  */
 
 // vector stuff

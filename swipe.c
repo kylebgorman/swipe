@@ -19,6 +19,7 @@
  * IN THE SOFTWARE.
  * 
  * swipe.c: primary functions
+ * Kyle Gorman
  */
 
 #define VNUM    1.3 // Current version
