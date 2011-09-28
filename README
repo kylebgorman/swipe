@@ -22,7 +22,7 @@ Linux: All the large libraries should be available as packages if you're using
 a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
 
-apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
+$ apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
 
 This installed the necessary libraries and all their dependencies.
 
@@ -36,9 +36,9 @@ http://www.mega-nerd.com/libsndfile/
 If you are superuser and wish to install globally the autoconf method should 
 work fine:
 
-tar -xvzf downloadedPackage.tar.gz
-cd folderOfPackageCreatedByUnTARring/
-./configure; make; make install;
+$ tar -xvzf downloadedPackage.tar.gz
+$ cd folderOfPackageCreatedByUnTARring/
+$ ./configure; make; make install;
 
 If you're not superuser, or don't want to install globally, make sure to use 
 '--prefix=PATH/TO/LOCATION' as an argument to 'configure'. You may need to 
@@ -52,20 +52,21 @@ AUDIO FILE FORMATS:
 
 All mono-channel audio recognized by libsndfile is accepted. For a list, see:
 
-    http://www.mega-nerd.com/libsndfile/#Features
+http://www.mega-nerd.com/libsndfile/#Features
 
 MISCELLANY:
 
-I also included the original MATLAB code from Camacho as swipe.m. There is also a Python module which calls the swipe code directly. This has only slightly more
-overhead than the "-b" batch method from C, if you're going to use a scripting
-language to do later processing anyways. The following example session (plus the
-docstrings) should get you started:
+I also included the original MATLAB code from Camacho. There is also a Python 
+module which calls the swipe code directly. This has only slightly more
+overhead than the "-b" batch method from C, if you're going to use a scripting 
+language to do later processing anyways. The following example session (plus 
+the docstrings) should get you started:
 
 <code>
 >>> from swipe import Swipe
 >>> P = Swipe('test.wav', pmin=75, pmax=500, st=.5, dt=0.01, mel=True)
 >>> for (t, pitch) in P:
-...     if pitch > 180:
+...     if pitch > 200:  # hz
 ...         print t, pitch
 ...
 ...
@@ -79,15 +80,12 @@ docstrings) should get you started:
 0.16 181.660075933
 1.25 180.753790055
 1.26 181.811640687
-1.29 183.180307839
-1.3 183.180307839
-1.31 183.180307839
->>> print P.mean()
+>>> print P.median()
 168.737503785
 >>> print P.var()
 129.630995655
->>> P.slice(2.5, 3) # in place, remove the samples not between 2.5 and 3 seconds
+>>> P.slice(2.5, 3) # remove the samples not between 2.5 and 3 seconds
 >>> (intercept, slope) = P.regress()
->>> print slope
+>>> print slope  # dropping 36 Hz a second in that interval
 -35.9938275598
 </code>
