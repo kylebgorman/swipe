@@ -417,10 +417,10 @@ vector spline(vector x, vector y) {
     double sig;
     vector y2 = makev(x.x);
     double* u = malloc((unsigned) (x.x - 1) * sizeof(double));
-    y2.v[0] = -.5; // Left boundary
+    y2.v[0] = -.5; // left boundary
     u[0] = (3. / (x.v[1] - x.v[0])) * ((y.v[1] - y.v[0]) /
                                        (x.v[1] - x.v[0]) - YP1);
-    for (i = 1; i < x.x - 1; i++) { // Decomp loop
+    for (i = 1; i < x.x - 1; i++) { // decomp loop
         sig = (x.v[i] - x.v[i - 1]) / (x.v[i + 1] - x.v[i - 1]);
         p = sig * y2.v[i - 1] + 2.;
         y2.v[i] = (sig - 1.) / p;
@@ -428,12 +428,12 @@ vector spline(vector x, vector y) {
                                  (y.v[i] - y.v[i - 1]) / (x.v[i] - x.v[i - 1]);
         u[i] = (6. * u[i] / (x.v[i + 1] - x.v[i - 1]) - sig * u[i - 1]) / p;
     }
-    qn = .5; // Right boundary
+    qn = .5; // right boundary
     y2.v[y2.x - 1] = ((3. / (x.v[x.x - 1] - x.v[x.x - 2])) * (YPN -
                                (y.v[y.x - 1] - y.v[y.x -  2]) / (x.v[x.x - 1] -
                                     x.v[x.x - 2])) - qn * u[x.x - 2]) /
                                              (qn * y2.v[y2.x - 2] + 1.);
-    for (j = x.x - 2; j >= 0; j--) { // Backsubstitution loop
+    for (j = x.x - 2; j >= 0; j--) { // backsubstitution loop
         y2.v[j] = y2.v[j] * y2.v[j + 1] + u[j];
     }
     free(u); 

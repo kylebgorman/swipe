@@ -16,7 +16,10 @@ HOW TO INSTALL:
 
 For all platforms: To compile, type "make" at the terminal. To install, type 
 "make install" at the terminal. You may specify '--prefix=PATH/TO/LOCATION' if
-you wish; the default is /usr/local
+you wish; the default is /usr/local, which places swipe in /usr/local/bin.
+
+If you do not wish to have make use of Python support, you can install the 
+binary only by issuing "make c; make installc".
   
 Linux: All the large libraries should be available as packages if you're using 
 a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
@@ -24,7 +27,8 @@ a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu
 
 $ apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
 
-This installed the necessary libraries and all their dependencies.
+This installs the necessary libraries and all their dependencies. Similar
+incantations are available for other Linux distributions.
 
 Mac OS X: The linear algebra libraries ([C]LAPACK, BLAS) ship with Mac OS X.
 You will need to install the newest versions of fftw3 and libsndfile, however. 
