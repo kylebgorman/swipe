@@ -12,7 +12,7 @@ How to Cite:
 Please cite this dissertation, and if possible include a URL to this program
 source, the most-recent version of which will always be at:
 
-`http://ling.upenn.edu/~kgorman/c/swipe/`
+http://ling.upenn.edu/~kgorman/c/swipe/
 
 How to install:
 ---------------
@@ -22,13 +22,15 @@ For all platforms: To compile, type "make" at the terminal. To install, type
 you wish; the default is /usr/local, which places swipe in /usr/local/bin.
 
 If you do not wish to have make use of Python support, you can install the 
-binary only by issuing "make c; make installc".
+binary only by issuing 
+
+    make c; make installc
   
 Linux: All the large libraries should be available as packages if you're using 
 a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
 
-$ apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
+    apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
 
 This installs the necessary libraries and all their dependencies. Similar
 incantations are available for other Linux distributions.
@@ -47,11 +49,7 @@ work fine:
     cd folderOfPackageCreatedByUnTARring/
     ./configure; make; make install;
 
-If you're not superuser, or don't want to install globally, make sure to use 
-'--prefix=PATH/TO/LOCATION' as an argument to 'configure'. You may need to 
-alter the #include statements as well.
-
-These two libraries are also available via fink or DarwinPorts.
+These two libraries are also available via Fink and DarwinPorts.
 
 Windows/CYGWIN: Unsupported. Send details of any successes, however.
 
