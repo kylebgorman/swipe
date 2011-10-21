@@ -6,7 +6,7 @@ speech and music. Doctoral dissertation, University of Florida. 2007.
 
 Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
 
-How to Cite:
+How to cite:
 ------------
 
 Please cite this dissertation, and if possible include a URL to this program
