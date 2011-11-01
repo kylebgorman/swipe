@@ -90,13 +90,12 @@ class Swipe(object):
         tt = 0.
         self.t = []
         self.p = []
-        if P.x < 1: 
-            raise ValueError('Failed to read audio')
+        if P.x < 1: raise ValueError('Failed to read audio')
         for i in range(P.x):
             val = doublea_getitem(P.v, i)
             if not isnan(val):
                 self.t.append(tt)
-                self.p.append(conv(doublea_getitem(P.v, i)))
+                self.p.append(conv(val))
             tt += dt
 
     def __str__(self):
@@ -186,6 +185,3 @@ class Swipe(object):
         else:
             return _regress(self.t, self.p)
 %}
-
-typedef struct { int x; double* v; } vector;
-vector pyswipe(char wav[], double min, double max, double st, double dt);

@@ -142,13 +142,12 @@ class Swipe(object):
         tt = 0.
         self.t = []
         self.p = []
-        if P.x < 1: 
-            raise ValueError('Failed to read audio')
+        if P.x < 1: raise ValueError('Failed to read audio')
         for i in range(P.x):
             val = doublea_getitem(P.v, i)
             if not isnan(val):
                 self.t.append(tt)
-                self.p.append(conv(doublea_getitem(P.v, i)))
+                self.p.append(conv(val))
             tt += dt
 
     def __str__(self):
@@ -238,31 +237,6 @@ class Swipe(object):
         else:
             return _regress(self.t, self.p)
 
-class vector(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, vector, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, vector, name)
-    __repr__ = _swig_repr
-    __swig_setmethods__["x"] = _swipe.vector_x_set
-    __swig_getmethods__["x"] = _swipe.vector_x_get
-    if _newclass:x = _swig_property(_swipe.vector_x_get, _swipe.vector_x_set)
-    __swig_setmethods__["v"] = _swipe.vector_v_set
-    __swig_getmethods__["v"] = _swipe.vector_v_get
-    if _newclass:v = _swig_property(_swipe.vector_v_get, _swipe.vector_v_set)
-    def __init__(self): 
-        this = _swipe.new_vector()
-        try: self.this.append(this)
-        except: self.this = this
-    __swig_destroy__ = _swipe.delete_vector
-    __del__ = lambda self : None;
-vector_swigregister = _swipe.vector_swigregister
-vector_swigregister(vector)
-
-
-def pyswipe(*args):
-  return _swipe.pyswipe(*args)
-pyswipe = _swipe.pyswipe
 # This file is compatible with both classic and new-style classes.
 
 

@@ -174,7 +174,6 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
     int i;
     int j;
     int k; 
-    int plim;
     double t = 0.;
     double tp = 0.;
     double td; 
@@ -183,9 +182,8 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
     for (i = 0; i < Slocal.x; i++) {
         vector q = makev(fERBs.x);
         for (j = 0; j < q.x; j++) q.v[j] = fERBs.v[j] / pci.v[i];
-        plim = floor((fERBs.v[fERBs.x - 1] / pci.v[i]) - .75);
         vector kernel = zerov(fERBs.x); // A zero-filled kernel vector
-        for (j = 0; j < ps.x; j++) { 
+        for (j = 0; j < ps.x; j++) {
             if PRIME(ps.v[j]) {
                 for (k = 0; k < kernel.x; k++) {
                     td = fabs(q.v[k] - j - 1.); 
@@ -363,13 +361,11 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     double td = 0.;
     SF_INFO info;
     SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, TRUE);
-    if (source == NULL || info.sections < 1) {
-        return(makev(0)); // later detected as a failure...
-    }
-    double nyquist = info.samplerate / 2.; 
-    double nyquist2 = info.samplerate; 
-    double nyquist16 = info.samplerate * 8.; 
-    if (max > nyquist) { 
+    if (source == NULL || info.sections < 1) return(makev(0)); 
+    double nyquist = info.samplerate / 2.;
+    double nyquist2 = info.samplerate;
+    double nyquist16 = info.samplerate * 8.;
+    if (max > nyquist) {
         max = nyquist;
         fprintf(stderr, "Max pitch > Nyquist...max set to %.2f Hz.\n", max);
     }
