@@ -32,5 +32,5 @@ clean:
 	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
 
 test:
-	python -c "import swipe; print swipe.Swipe('king.wav').regress()"
+	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
 
