@@ -17,18 +17,20 @@ install: installc installpy
 c: swipe.c vector.c
 	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
+py:
+	swig -python swipe.i
+	python setup.py build
+
 installc: c
 	install swipe $(PREFIX)/bin
 
-swigpy:
-	swig -python swipe.i
-
-py:
-	python setup.py -q build
-
 installpy: py
-	python setup.py -q install
+	python setup.py install
 
 clean:
 	python setup.py clean
-	rm -rf $(TARGET) swipe.pyc _swipe.so build/
+	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
+
+test:
+	python -c "import swipe; print swipe.Swipe('king.wav').regress()"
+

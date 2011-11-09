@@ -30,6 +30,9 @@
 #include "swipe.h"
 %}
 
+typedef struct { int x; double* v; } vector;
+vector pyswipe(char[], double, double, double, double);
+
 %pythoncode %{
 import numpy as NP
 from bisect import bisect
