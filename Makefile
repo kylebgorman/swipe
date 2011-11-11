@@ -1,6 +1,3 @@
-# Hand-crafted Makefile
-# Kyle Gorman
-# 
 # By default, "make; make install" gives you Python support. If you don't want 
 # this, then you can run "make c; make installc". If you want control the 
 # installation root (e.g., /, /usr, /usr/local), set the $PREFIX environmental
@@ -32,5 +29,6 @@ clean:
 	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
 
 test:
+	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
-
+	rm king.wav
