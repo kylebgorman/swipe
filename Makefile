@@ -13,6 +13,7 @@ install: installc installpy
 
 c: swipe.c vector.c
 	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+	strip $(TARGET)
 
 py:
 	swig -python swipe.i

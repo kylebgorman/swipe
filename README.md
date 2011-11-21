@@ -1,4 +1,4 @@
-SWIPE' pitch estimator, v. 1.3
+SWIPE' pitch estimator, v. 1.4
 ==============================
 
 Based on Camacho, Arturo. A sawtooth waveform inspired pitch estimator for
