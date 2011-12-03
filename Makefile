@@ -19,17 +19,17 @@ py:
 	swig -python swipe.i
 	python setup.py build
 
-installc: c
+installc: swipe
 	install swipe $(PREFIX)/bin
 
-installpy: py
+installpy: swipe
 	python setup.py install
 
-clean:
+clean: 
 	python setup.py clean
 	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
 
-test:
+test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
 	rm king.wav
