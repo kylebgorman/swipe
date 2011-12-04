@@ -16,7 +16,7 @@ c: swipe.c vector.c
 	strip $(TARGET)
 
 py:
-	swig -python swipe.i
+	swig -python -threads swipe.i
 	python setup.py build
 
 installc: swipe
