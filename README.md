@@ -40,9 +40,7 @@ You will need to install the newest versions of fftw3 and libsndfile, and SWIG
 if you want Python support. They are available for free online:
 
 http://www.swig.org/
-
 http://www.fftw.org/
-
 http://www.mega-nerd.com/libsndfile/
 
 If you are superuser and wish to install globally the autoconf method should 
