@@ -1,6 +1,3 @@
-# Hand-crafted Makefile
-# Kyle Gorman
-# 
 # By default, "make; make install" gives you Python support. If you don't want 
 # this, then you can run "make c; make installc". If you want control the 
 # installation root (e.g., /, /usr, /usr/local), set the $PREFIX environmental
@@ -15,22 +12,24 @@ all: c py
 install: installc installpy
 
 c: swipe.c vector.c
-	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+	$(CC) -O2 $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+	strip $(TARGET)
 
 py:
-	swig -python swipe.i
+	swig -python -threads swipe.i
 	python setup.py build
 
-installc: c
+installc: swipe
 	install swipe $(PREFIX)/bin
 
-installpy: py
+installpy: swipe
 	python setup.py install
 
-clean:
+clean: 
 	python setup.py clean
 	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
 
-test:
+test: swipe
+	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
-
+	rm king.wav

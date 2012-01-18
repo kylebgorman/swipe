@@ -19,7 +19,7 @@
  * IN THE SOFTWARE.
  *
  * swipe.i: SWIG file for Python module
- * Kyle Gorman, with some Python function suggestions from Josef Fruehwald.
+ * Kyle Gorman
  */
 
 %include "carrays.i"
@@ -36,6 +36,7 @@ vector pyswipe(char[], double, double, double, double);
 %pythoncode %{
 import numpy as NP
 from bisect import bisect
+from os import access, R_OK
 from math import log, fsum, isnan, sqrt
 
 ## helper functions
@@ -83,6 +84,9 @@ class Swipe(object):
         """
         # Get Python path, just in case someone passed a file object
         f = path if isinstance(path, str) else path.name
+        # check the path, quickly
+        if not access(f, R_OK): 
+            raise(IOError('File "{0}" not found'.format(f)))
         # Obtain the vector itself
         P = pyswipe(f, pmin, pmax, st, dt)
         # get function
@@ -102,7 +106,7 @@ class Swipe(object):
             tt += dt
 
     def __str__(self):
-        return '<Swipe pitch track with %d points>' % len(self.t)
+        return '<Swipe pitch track with {0} points>'.format(len(self.t))
 
     def __len__(self):
         return len(self.t)

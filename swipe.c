@@ -22,7 +22,7 @@
  * Kyle Gorman
  */
 
-#define VNUM    1.3 // Current version
+#define VNUM    1.4 // Current version
 
 #include <math.h>
 #include <stdio.h>
@@ -45,7 +45,8 @@
 #define POLYV   .0013028 //  1 / 12 / 64 = 1 / 768
 #define DLOG2P  .0104167 // 1/96
 
-#define ST      .3  // Feel free to change these
+// Feel free to change these defaults
+#define ST      .3  
 #define DT      .001
 #define MIN     100.
 #define MAX     600.
@@ -61,30 +62,36 @@ int isnan(double x) {
 #endif
 
 #ifndef log2
-double log2(double x) { // A base-2 log function
+// A base-2 log function
+double log2(double x) { 
     return log(x) / log(2.);
 }
 #endif
 
 #ifndef round
-double round(double x) { // Rounds a double to the nearest integer value
+// Rounds a double to the nearest integer value
+double round(double x) { 
     return(x >= 0. ? floor(x + .5) : floor(x - .5));
 }
 #endif
 
-double hz2mel(double hz) { // Converts from hertz to Mel frequency
+// Converts from hertz to Mel frequency
+double hz2mel(double hz) { 
     return(1127.01048 * log(1. + hz / 700.));
 }
 
-double hz2erb(double hz) { // Converts from hertz to ERBs
+// Converts from hertz to ERBs
+double hz2erb(double hz) { 
     return(21.4 * log10(1. + hz / 229.));
 }
 
-double erb2hz(double erb) { // Converts from ERBs to hertz 
+// Converts from ERBs to hertz 
+double erb2hz(double erb) { 
     return((pow(10, erb / 21.4) - 1.) * 229.);
 }
 
-double fixnan(double x) { // A silly function that treats NaNs as 0.
+// A silly function that treats NaNs as 0.
+double fixnan(double x) { 
     return(isnan(x) ? 0. : x);
 }
 
@@ -114,7 +121,6 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     int hi;
     int offset = 0;
     double td = nyquist / w2; // This is equivalent to fstep
-
     // Testing showed this configuration of fftw to be fastest
     double* fi = fftw_malloc(sizeof(double) * w); 
     fftw_complex* fo = fftw_malloc(sizeof(fftw_complex) * w);
@@ -412,12 +418,12 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     return(p);
 }
 
+// A Python version of the caller
 vector pyswipe(char wav[], double min, double max, double st, double dt) {
     return swipe(fileno(fopen(wav, "r")), min, max, st, dt);
 }
 
 // Function for printing the pitch vector returned by swipe()
-
 void printp(vector p, int fid, double dt, int mel, int vlo) {
     int i;
     double t = 0.; 
@@ -462,7 +468,7 @@ int main(int argc, char* argv[]) {
 <kgorman@ling.upenn.edu>.\nBased on: Camacho, Arturo (2007). A sawtooth \
 waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, University of Florida.\n\n\
-\tmore information: <http://ling.upenn.edu/~kgorman/c/swipe/>\n\n";
+More information: <http://ling.upenn.edu/~kgorman/c/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
 swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\

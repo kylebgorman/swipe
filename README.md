@@ -1,4 +1,4 @@
-SWIPE' pitch estimator, v. 1.3
+SWIPE' pitch estimator, v. 1.4
 ==============================
 
 Based on Camacho, Arturo. A sawtooth waveform inspired pitch estimator for
@@ -30,14 +30,16 @@ Linux: All the large libraries should be available as packages if you're using
 a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
 
-    apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev
+    apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
 
 This installs the necessary libraries and all their dependencies. Similar
 incantations are available for other Linux distributions.
 
 Mac OS X: The linear algebra libraries ([C]LAPACK, BLAS) ship with Mac OS X.
-You will need to install the newest versions of fftw3 and libsndfile, however. 
-They are available for free online:
+You will need to install the newest versions of fftw3 and libsndfile, and SWIG
+if you want Python support. They are available for free online:
+
+http://www.swig.org/
 
 http://www.fftw.org/
 
