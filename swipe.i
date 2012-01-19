@@ -35,7 +35,9 @@ vector pyswipe(char[], double, double, double, double);
 
 %pythoncode %{
 import numpy as NP
+
 from bisect import bisect
+from heapq import nlargest
 from os import access, R_OK
 from math import log, fsum, isnan, sqrt
 
@@ -43,19 +45,11 @@ from math import log, fsum, isnan, sqrt
 
 def _mean(x):
     """ 
-    Compute the mean of x
+    Compute mean. Seems to be much faster than using Numpy, though other 
+    things aren't
     """
     return fsum(x) / len(x)
 
-def _var(x):
-    """
-    Compute the variance of x 
-    """
-    my_mean = _mean(x)
-    s = 0.
-    for i in x:
-        s += (i - my_mean) ** 2
-    return s / len(x) - 1
 
 def _regress(x, y):
     """
@@ -64,21 +58,22 @@ def _regress(x, y):
     solution = NP.linalg.lstsq(NP.vstack((NP.ones(len(x)), x)).T, y)
     return solution[0]
 
+
 ## the class itself
 
 class Swipe(object):
     """
-    Wrapper class representing a SWIPE' p extraction
+    Wrapper class representing a SWIPE' pitch extraction
     """
 
-    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=0.001, mel=False):
+    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001, mel=False):
         """
         Class constructor:
 
         path = either a file object pointing to a wav file, or a string path
         pmin = minimum frequency in Hz
         pmax = maximum frequency in Hz
-        st = frequency cutoff (must be between [0.0, 1.0]
+        st = strength threshold (must be between [0.0, 1.0])
         dt = samplerate in seconds
         show_nan = if True, voiceless intervals are returned, marked as nan.
         """
@@ -105,14 +100,18 @@ class Swipe(object):
                 self.p.append(conv(val))
             tt += dt
 
+
     def __str__(self):
         return '<Swipe pitch track with {0} points>'.format(len(self.t))
+
 
     def __len__(self):
         return len(self.t)
 
+
     def __iter__(self):
         return iter(zip(self.t, self.p))
+
 
     def __getitem__(self, t):
         """ 
@@ -125,6 +124,7 @@ class Swipe(object):
             return self.p[i - 1]
         else:
             return self.p[i]
+
 
     def _bisect(self, tmin=None, tmax=None):
         """ 
@@ -140,6 +140,7 @@ class Swipe(object):
         else:
             return (bisect(self.t, tmin), bisect(self.t, tmax))
 
+
     def slice(self, tmin=None, tmax=None):
         """ 
         Slice out samples outside of s [tmin, tmax] inline 
@@ -151,6 +152,7 @@ class Swipe(object):
         else:
             raise ValueError, 'At least one of tmin, tmax must be defined'
 
+
     def mean(self, tmin=None, tmax=None):
         """ 
         Return pitch mean 
@@ -161,15 +163,28 @@ class Swipe(object):
         else:
             return _mean(self.p)
 
+
+    def median(self, tmin=None, tmax=None):
+        """
+        Return pitch median
+        """
+        if tmin or tmax:
+            (i, j) = self._bisect(tmin, tmax)
+            return NP.median(self.p[i:j])
+        else:
+            return NP.median(self.p)
+    
+
+
     def var(self, tmin=None, tmax=None):
         """ 
         Return pitch variance 
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            return _var(self.p[i:j])
+            return NP.var(self.p[i:j])
         else:
-            return _var(self.p)
+            return NP.var(self.p)
 
     def sd(self, tmin=None, tmax=None):
         """ 

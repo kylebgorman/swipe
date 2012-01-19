@@ -87,7 +87,7 @@ the docstrings) should get you started:
     0.16 181.660075933
     1.25 180.753790055
     1.26 181.811640687
-    >>> print P.median()
+    >>> print P.mean()
     168.737503785
     >>> print P.var()
     129.630995655
