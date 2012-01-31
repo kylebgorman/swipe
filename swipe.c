@@ -572,7 +572,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     }
     if (batch != NULL) { // Iterate through batch pairs
         while (fscanf(batch, "%s %s", wav, out) != EOF) {
-            fprintf(stderr, "%s -> %s...", wav, out);
+            printf("%s -> %s...", wav, out);
             FILE* wf = fopen(wav, "r");
             if (wf == NULL) {
                 fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
