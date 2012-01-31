@@ -418,7 +418,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     return(p);
 }
 
-// A Python version of the caller
+// A Python version of the call
 vector pyswipe(char wav[], double min, double max, double st, double dt) {
     return swipe(fileno(fopen(wav, "r")), min, max, st, dt);
 }
@@ -495,18 +495,31 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
      * initialize the char[] as "\0"-initial. This is done automatically by 
      * Linux tools, but not always by Mac OS X, I find.
      */
-    char wav[FILENAME_MAX] = "\0";
-    char out[FILENAME_MAX] = "\0";
+    char* wav = "\0"; 
+    char* out = "\0";
+    int needed;
     while ((ch = getopt(argc, argv, "i:o:r:s:t:b:mnhv")) != -1) {
         switch(ch) {
             case 'b':
                 batch = fopen(optarg, "r"); 
                 break;
             case 'i':
+                needed = strlen(optarg);
+                if (needed > FILENAME_MAX) {
+                    fprintf(stderr, "Input filename too long, aborting.\n");
+                    exit(EXIT_FAILURE);
+                }
+                wav = (char*) malloc(sizeof(char) * needed);
                 strcpy(wav, optarg);
                 break; 
             case 'o':
-                strcpy(out, optarg); 
+                needed = strlen(optarg);
+                if (needed > FILENAME_MAX) {
+                    fprintf(stderr, "Output filename too long, aborting.\n");
+                    exit(EXIT_FAILURE);
+                }
+                out = (char*) malloc(sizeof(char) * needed);
+                strcpy(out, optarg);
                 break;
             case 'r':
                 min = atof(strtok(optarg, ":"));
@@ -590,7 +603,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
         vector p;
         if (*wav == '\0') {
             p = swipe(fileno(stdin), min, max, st, dt);
-            strcpy(wav, "<STDIN>"); // no buffer overflows!
+            wav = (char*) malloc(sizeof(char) * 7);
+            strcpy(wav, "<STDIN>");
         }
         else {
             FILE* input = fopen(wav, "r");
