@@ -30,6 +30,10 @@
 
 #include "vector.h"
 
+#ifdef __APPLE__
+    #include <Accelerate/Accelerate.h>
+#endif
+
 #ifndef NAN
     #define NAN     sqrt(-1.)
 #endif
@@ -385,12 +389,14 @@ int sieve(intvector ones) {
     ones.v[0] = NP; // Because 1 is not prime (though sometimes we wish it was)
     for (i = 1; i < sp; i++) { 
         if PRIME(ones.v[i]) {
-            for (j = i + i + 1; j < ones.x; j += i + 1) ones.v[j] = NP;
+            for (j = i + i + 1; j < ones.x; j += i + 1) 
+                ones.v[j] = NP;
             k++;
         }
     }
     for (i = sp; i < ones.x; i++) { // Now we're only counting
-        if PRIME(ones.v[i]) k++;
+        if PRIME(ones.v[i]) 
+            k++;
     }
     return(k); 
 }
@@ -401,7 +407,8 @@ intvector primes(int n) {
     intvector myOnes = onesiv(n);
     intvector myPrimes = makeiv(sieve(myOnes)); // size of the # of primes
     for (i = 0; i < myOnes.x; i++) { // could start at 1, unless we're hacking
-        if PRIME(myOnes.v[i]) myPrimes.v[j++] = i + 1;
+        if PRIME(myOnes.v[i]) 
+            myPrimes.v[j++] = i + 1;
     }
     freeiv(myOnes);
     return(myPrimes);

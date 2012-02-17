@@ -82,8 +82,8 @@ void                              freeim(intmatrix);
 void                              printim(intmatrix);
 
 // prime sieve
-#define P                          1
 #define NP                         0
+#define PR                         1
 
 #define PRIME(x)                   (x == 1)
 

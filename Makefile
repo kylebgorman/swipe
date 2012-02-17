@@ -5,8 +5,8 @@
 # called something other than "swipe" by setting the $TARGET environmental
 # variable.
 
-TARGET?=swipe
-PREFIX?=/usr/local
+TARGET=swipe
+PREFIX=/usr/local
 
 all: c py
 install: installc installpy

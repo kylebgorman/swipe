@@ -400,7 +400,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     for (i = 0; i < fERBs.x; i++) fERBs.v[i] = erb2hz(td + (i * DERBS));
     intvector ps = onesiv(floor(fERBs.v[fERBs.x - 1] / pc.v[0] - .75));
     sieve(ps);
-    ps.v[0] = P; // Hack to make 1 "act" prime...don't ask 
+    ps.v[0] = PR; // Hack to make 1 "act" prime...don't ask 
     matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt)); // Strength
     Sfirst(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, 0); 
     for (i = 1; i < ws.x - 1; i++) { // S is updated inline here
@@ -603,8 +603,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
         vector p;
         if (*wav == '\0') {
             p = swipe(fileno(stdin), min, max, st, dt);
-            wav = (char*) malloc(sizeof(char) * 7);
-            strcpy(wav, "<STDIN>");
+            wav = "<STDIN>";
         }
         else {
             FILE* input = fopen(wav, "r");
@@ -615,14 +614,15 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
             p = swipe(fileno(input), min, max, st, dt);
         }
         if (p.x == NOK) {
-            if (*wav == '\0') fprintf(stderr, "Reading from STDIN failed.\n");
-            else fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
+            if (*wav == '\0') 
+                fprintf(stderr, "Reading from STDIN failed.\n");
+            else 
+                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
             exit(EXIT_FAILURE);
         }
         else {
-            if (*out == '\0') {
+            if (*out == '\0') 
                 printp(p, fileno(stdout), dt, mel, vlo);
-            }
             else {
                 FILE* output = fopen(out, "w");
                 if (output == NULL) {
