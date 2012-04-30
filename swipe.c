@@ -468,7 +468,7 @@ int main(int argc, char* argv[]) {
 <kgorman@ling.upenn.edu>.\nBased on: Camacho, Arturo (2007). A sawtooth \
 waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, University of Florida.\n\n\
-More information: <http://ling.upenn.edu/~kgorman/c/swipe/>\n\n";
+More information: <http://ling.upenn.edu/~kgorman/C/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
 swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\

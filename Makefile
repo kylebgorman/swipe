@@ -8,12 +8,13 @@
 TARGET=swipe
 PREFIX=/usr/local
 
+CFLAGS= -O2
+
 all: c py
 install: installc installpy
 
 c: swipe.c vector.c
-	$(CC) -O2 $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
-	strip $(TARGET)
+	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
 py:
 	swig -python -threads swipe.i

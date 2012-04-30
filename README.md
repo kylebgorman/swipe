@@ -12,7 +12,7 @@ How to cite:
 Please cite this dissertation, and if possible include a URL to this program
 source, the most-recent version of which will always be at:
 
-http://ling.upenn.edu/~kgorman/c/swipe/
+http://ling.upenn.edu/~kgorman/C/swipe/
 
 How to install:
 ---------------
