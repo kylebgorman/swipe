@@ -14,19 +14,17 @@ Please cite this dissertation, and if possible include a URL to the source.
 How to install:
 ---------------
 
-For all platforms: To compile, type "make" at the terminal. To install, type 
-"make install" at the terminal. You may specify '--prefix=PATH/TO/LOCATION' if
-you wish; the default is /usr/local, which places swipe in /usr/local/bin.
+For all platforms: To compile, type `make` at the terminal. To install, type 
+`make install` at the terminal. You may specify `--prefix=PATH/TO/LOCATION` if
+you wish; the default is `/usr/local`, which places swipe in `/usr/local/bin`.
 
 If you do not wish to have make use of Python support, you can install the 
-binary only by issuing 
-
-    make c installc
+binary only by issuing `make c installc`.
   
 Linux: All the large libraries should be available as packages if you're using 
-a "modern" distro. For instance, on a Ubuntu system (Ubuntu 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
+a "modern" distro. For instance, on a Ubuntu system (Ubuntu 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran:
 
-    apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
+    sudo apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
 
 This installs the necessary libraries and all their dependencies. Similar
 incantations are available for other Linux distributions.
@@ -57,7 +55,7 @@ This library has now been incorporated into the excellent [Speech Signal Process
 
 I also included the original MATLAB code from Camacho. There is also a Python 
 module which calls the swipe code directly. This has only slightly more
-overhead than the "-b" batch method from C, if you're going to use a scripting 
+overhead than the `-b` batch method from C, if you're going to use a scripting 
 language to do later processing anyways. The following example session (plus 
 the docstrings) should get you started:
 
