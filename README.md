@@ -62,7 +62,7 @@ the docstrings) should get you started:
     >>> from swipe import Swipe
     >>> P = Swipe('test.wav', pmin=75, pmax=500, st=.5, dt=0.01, mel=False)
     >>> for (t, pitch) in P:
-    ...     if pitch > 200:  # hz
+    ...     if pitch < 200:  # hz
     ...         print t, pitch
     ...
     ...
