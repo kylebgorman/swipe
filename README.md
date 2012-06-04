@@ -9,10 +9,7 @@ Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
 How to cite:
 ------------
 
-Please cite this dissertation, and if possible include a URL to this program
-source, the most-recent version of which will always be at:
-
-http://ling.upenn.edu/~kgorman/C/swipe/
+Please cite this dissertation, and if possible include a URL to the source.
 
 How to install:
 ---------------
@@ -24,11 +21,10 @@ you wish; the default is /usr/local, which places swipe in /usr/local/bin.
 If you do not wish to have make use of Python support, you can install the 
 binary only by issuing 
 
-    make c; make installc
+    make c installc
   
 Linux: All the large libraries should be available as packages if you're using 
-a "modern" distro. For instance, on a current Debian/Ubuntu system (Ubuntu 
-9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
+a "modern" distro. For instance, on a Ubuntu system (Ubuntu 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran (as superuser):
 
     apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
 
@@ -36,12 +32,7 @@ This installs the necessary libraries and all their dependencies. Similar
 incantations are available for other Linux distributions.
 
 Mac OS X: The linear algebra libraries ([C]LAPACK, BLAS) ship with Mac OS X.
-You will need to install the newest versions of fftw3 and libsndfile, and SWIG
-if you want Python support. They are available for free online:
-
-http://www.swig.org/
-http://www.fftw.org/
-http://www.mega-nerd.com/libsndfile/
+You will need to install the newest versions of [SWIG](http://www.swig.org/) (if you want Python support), [fftw3](http://www.fftw.org/), and [libsndfile](http://www.mega-nerd.com/libsndfile/)
 
 If you are superuser and wish to install globally the autoconf method should 
 work fine:
@@ -57,12 +48,12 @@ Windows/CYGWIN: Unsupported. Send details of any successes, however.
 Audio file formats:
 -------------------
 
-All mono-channel audio recognized by libsndfile is accepted. For a list, see:
-
-http://www.mega-nerd.com/libsndfile/#Features
+[All mono-channel audio recognized by libsndfile](http://www.mega-nerd.com/libsndfile/#Features) should work. Unfortunately, for licensing issues, that does not include MP3.
 
 Miscellany:
 -----------
+
+This library has now been incorporated into the excellent [Speech Signal Processing Toolkit](http://sp-tk.sourceforge.net/)
 
 I also included the original MATLAB code from Camacho. There is also a Python 
 module which calls the swipe code directly. This has only slightly more

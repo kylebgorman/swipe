@@ -1,5 +1,5 @@
 # By default, "make; make install" gives you Python support. If you don't want 
-# this, then you can run "make c; make installc". If you want control the 
+# this, then you can run "make c installc". If you want control the 
 # installation root (e.g., /, /usr, /usr/local), set the $PREFIX environmental
 # variable. "bin" is appended automatically. Similarly, you can make a binary
 # called something other than "swipe" by setting the $TARGET environmental
@@ -8,12 +8,12 @@
 TARGET=swipe
 PREFIX=/usr/local
 
-CFLAGS= -O2
+CFLAGS=-O2
 
 all: c py
 install: installc installpy
 
-c: swipe.c vector.c
+c:
 	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
 py:
@@ -28,10 +28,10 @@ installpy: swipe
 
 clean: 
 	python setup.py clean
-	rm -rf build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
+	$(RM) -r build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
 
 test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
-	swipe -ni king.wav
+	./swipe -ni king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
 	rm king.wav

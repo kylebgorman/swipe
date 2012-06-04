@@ -2,6 +2,7 @@
 % has only been subject to slight modification. to make it more readable. The 
 % default values are Camacho's, not mine (and in fact, are definitely not 
 % appropriate for speech, in my opinion). -- Kyle Gorman, 9/21/11
+
 more on;
 
 function [p,t,s] = swipep(x,fs,plim,dt,sTHR)

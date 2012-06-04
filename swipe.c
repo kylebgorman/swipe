@@ -101,9 +101,8 @@ void La(matrix L, vector f, vector fERBs, fftw_plan plan,
     int j;
     fftw_execute(plan);
     vector a = makev(w2);
-    for (j = 0; j < w2; j++) { // This iterates over only the first half
+    for (j = 0; j < w2; j++) // This iterates over only the first half
         a.v[j] = sqrt(fo[j][0] * fo[j][0] + fo[j][1] * fo[j][1]);
-    }
     vector a2 = spline(f, a); // a2 is now the result of the cubic spline
     L.m[i][0] = fixnan(sqrt(splinv(f, a, a2, fERBs.v[0], hi)));
     for (j = 1; j < L.y; j++) { // Perform a bisection query at ERB intervals
@@ -126,32 +125,29 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     fftw_complex* fo = fftw_malloc(sizeof(fftw_complex) * w);
     fftw_plan plan = fftw_plan_dft_r2c_1d(w, fi, fo, FFTW_ESTIMATE); 
     vector hann = makev(w); // This defines the Hann[ing] window
-    for (i = 0; i < w; i++) {
+    for (i = 0; i < w; i++) 
         hann.v[i] = .5 - (.5 * cos(2. * M_PI * ((double) i / w)));
-    }
     vector f = makev(w2);
-    for (i = 0; i < w2; i++) f.v[i] = i * td;
+    for (i = 0; i < w2; i++) 
+        f.v[i] = i * td;
     hi = bisectv(f, fERBs.v[0]); // All calls to La() will begin here
     matrix L = makem(ceil((double) x.x / w2) + 1, fERBs.x); 
-    for (j = 0; j < w2; j++) { // Left boundary case
+    for (j = 0; j < w2; j++) // Left boundary case
         fi[j] = 0.; // More explicitly, 0. * hann.v[j]
-    }
-    for (/* j = w2 */; j < w; j++) {
+    for (/* j = w2 */; j < w; j++) 
         fi[j] = x.v[j - w2] * hann.v[j];
-    }
     La(L, f, fERBs, plan, fo, w2, hi, 0); 
     for (i = 1; i < L.x - 2; i++) { // Middle case 
-        for (j = 0; j < w; j++) fi[j] = x.v[j + offset] * hann.v[j];
+        for (j = 0; j < w; j++) 
+            fi[j] = x.v[j + offset] * hann.v[j];
         La(L, f, fERBs, plan, fo, w2, hi, i); 
         offset += w2;
     }
     for (/* i = L.x - 2; */; i < L.x; i++) { // Right two boundary cases
-        for (j = 0; j < x.x - offset; j++) { // This dies at x.x + w2
+        for (j = 0; j < x.x - offset; j++) // This dies at x.x + w2
             fi[j] = x.v[j + offset] * hann.v[j];
-        }
-        for (/* j = x.x - offset */; j < w; j++) {
+        for (/* j = x.x - offset */; j < w; j++) 
             fi[j] = 0.; // Once again, 0. * hann.v[j] 
-        }
         La(L, f, fERBs, plan, fo, w2, hi, i);
         offset += w2;
     } // Now L is fully valued
@@ -160,10 +156,12 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     // L must now be normalized
     for (i = 0; i < L.x; i++) { 
         td = 0.; // td is the value of the normalization factor
-        for (j = 0; j < L.y; j++) td += L.m[i][j] * L.m[i][j];
+        for (j = 0; j < L.y; j++) 
+            td += L.m[i][j] * L.m[i][j];
         if (td != 0.) { // Catches zero-division
             td = sqrt(td);
-            for (j = 0; j < L.y; j++) L.m[i][j] /= td;
+            for (j = 0; j < L.y; j++) 
+                L.m[i][j] /= td;
         } // Otherwise, it is already 0.
     } 
     fftw_destroy_plan(plan); 
@@ -193,12 +191,10 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
             if PRIME(ps.v[j]) {
                 for (k = 0; k < kernel.x; k++) {
                     td = fabs(q.v[k] - j - 1.); 
-                    if (td < .25) { // Peaks
+                    if (td < .25) // Peaks
                         kernel.v[k] = cos(2. * M_PI * q.v[k]);
-                    }
-                    else if (td < .75) { // Valleys
+                    else if (td < .75)  // Valleys
                         kernel.v[k] += cos(2. * M_PI * q.v[k]) / 2.;
-                    }
                 }
             }
         }
@@ -206,16 +202,15 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
         td = 0.; 
         for (j = 0; j < kernel.x; j++) {
             kernel.v[j] *= sqrt(1. / fERBs.v[j]); // Applying the envelope
-            if (kernel.v[j] > 0.) td += kernel.v[j] * kernel.v[j];
+            if (kernel.v[j] > 0.) 
+                td += kernel.v[j] * kernel.v[j];
         }
         td = sqrt(td); // Now, td is the p=2 norm factor
-        for (j = 0; j < kernel.x; j++) { // Normalize the kernel
+        for (j = 0; j < kernel.x; j++) // Normalize the kernel
             kernel.v[j] /= td;
-        }
         for (j = 0; j < L.x; j++) { 
-            for (k = 0; k < L.y; k++) {
+            for (k = 0; k < L.y; k++) 
                 Slocal.m[i][j] += kernel.v[k] * L.m[j][k]; // i.e, kernel' * L
-            } 
         }
         freev(kernel);
     } // Slocal is filled out; time to interpolate
@@ -367,7 +362,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     double td = 0.;
     SF_INFO info;
     SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, TRUE);
-    if (source == NULL || info.sections < 1) return(makev(0)); 
+    if (source == NULL || info.sections < 1) 
+        return(makev(0)); 
     double nyquist = info.samplerate / 2.;
     double nyquist2 = info.samplerate;
     double nyquist16 = info.samplerate * 8.;
@@ -381,9 +377,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     }
     intvector ws = makeiv(round(log2((nyquist16) / min) -  
                                 log2((nyquist16) / max)) + 1); 
-    for (i = 0; i < ws.x; i++) {
+    for (i = 0; i < ws.x; i++) 
         ws.v[i] = pow(2, round(log2(nyquist16 / min))) / pow(2, i);
-    }
     vector pc = makev(ceil((log2(max) - log2(min)) / DLOG2P));
     vector d = makev(pc.x);
     for (i = pc.x - 1; i >= 0; i--) { 
@@ -397,15 +392,16 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     vector fERBs = makev(ceil((hz2erb(nyquist) - 
                                hz2erb(pow(2, td) / 4)) / DERBS));
     td = hz2erb(min / 4.);
-    for (i = 0; i < fERBs.x; i++) fERBs.v[i] = erb2hz(td + (i * DERBS));
+    for (i = 0; i < fERBs.x; i++) 
+        fERBs.v[i] = erb2hz(td + (i * DERBS));
     intvector ps = onesiv(floor(fERBs.v[fERBs.x - 1] / pc.v[0] - .75));
     sieve(ps);
     ps.v[0] = PR; // Hack to make 1 "act" prime...don't ask 
     matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt)); // Strength
     Sfirst(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, 0); 
-    for (i = 1; i < ws.x - 1; i++) { // S is updated inline here
+    for (i = 1; i < ws.x - 1; i++) // S is updated inline here
         Snth(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, i);
-    } // i is now (ws.x - 1)
+    // i is now (ws.x - 1)
     Slast(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, i);
     freev(fERBs); 
     freeiv(ws);
@@ -437,9 +433,8 @@ void printp(vector p, int fid, double dt, int mel, int vlo) {
         }
         else { // Default case
             for (i = 0; i < p.x; i++) {
-                if (!isnan(p.v[i])) {
+                if (!isnan(p.v[i]))
                     fprintf(sink, "%4.4f %5.4f\n", t, hz2mel(p.v[i])); 
-                }
                 t += dt;
             }
         }
@@ -453,7 +448,8 @@ void printp(vector p, int fid, double dt, int mel, int vlo) {
         }
         else { 
             for (i = 0; i < p.x; i++) {
-                if (!isnan(p.v[i])) fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]); 
+                if (!isnan(p.v[i])) 
+                    fprintf(sink, "%4.4f %5.4f\n", t, p.v[i]);
                 t += dt;
             }
         }
@@ -492,8 +488,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     int ch;
     FILE* batch = NULL; // not going to be read that way,
     /* 
-     * initialize the char[] as "\0"-initial. This is done automatically by 
-     * Linux tools, but not always by Mac OS X, I find.
+     * initialize the char[] as "\0"-initial. Some toolkits, but not all, 
+     * do this.
      */
     char* wav = "\0"; 
     char* out = "\0";
