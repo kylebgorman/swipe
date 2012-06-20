@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011 Kyle Gorman
+/* Copyright (c) 2009-2012 Kyle Gorman
 * 
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to 
@@ -18,10 +18,11 @@
 *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 *  IN THE SOFTWARE.
 *
-*  swipe.h: header for SWIG 
+*  swipe.h: header for the SWIPE functions
 *  Kyle Gorman
 */
 
 #include "vector.h"
 
+vector swipe(     int, double, double, double, double);
 vector pyswipe(char[], double, double, double, double);

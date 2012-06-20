@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011 Kyle Gorman
+/* Copyright (c) 2009-2012 Kyle Gorman
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to 
@@ -22,7 +22,7 @@
  * Kyle Gorman
  */
 
-#define VNUM    1.4 // Current version
+#define VNUM    1.4 // current version
 
 #include <math.h>
 #include <stdio.h>
@@ -45,7 +45,7 @@
 #define POLYV   .0013028 //  1 / 12 / 64 = 1 / 768
 #define DLOG2P  .0104167 // 1/96
 
-// Feel free to change these defaults
+// feel free to change these defaults
 #define ST      .3  
 #define DT      .001
 #define MIN     100.
@@ -62,50 +62,50 @@ int isnan(double x) {
 #endif
 
 #ifndef log2
-// A base-2 log function
+// a base-2 log function
 double log2(double x) { 
     return log(x) / log(2.);
 }
 #endif
 
 #ifndef round
-// Rounds a double to the nearest integer value
+// rounds a double to the nearest integer value
 double round(double x) { 
     return(x >= 0. ? floor(x + .5) : floor(x - .5));
 }
 #endif
 
-// Converts from hertz to Mel frequency
+// converts from hertz to Mel frequency
 double hz2mel(double hz) { 
     return(1127.01048 * log(1. + hz / 700.));
 }
 
-// Converts from hertz to ERBs
+// converts from hertz to ERBs
 double hz2erb(double hz) { 
     return(21.4 * log10(1. + hz / 229.));
 }
 
-// Converts from ERBs to hertz 
+// converts from ERBs to hertz 
 double erb2hz(double erb) { 
     return((pow(10, erb / 21.4) - 1.) * 229.);
 }
 
-// A silly function that treats NaNs as 0.
+// a silly function that treats NaNs as 0.
 double fixnan(double x) { 
     return(isnan(x) ? 0. : x);
 }
 
-// A helper function for loudness() for individual fft slices
+// a helper function for loudness() for individual fft slices
 void La(matrix L, vector f, vector fERBs, fftw_plan plan, 
                                    fftw_complex* fo, int w2, int hi, int i) {
     int j;
     fftw_execute(plan);
     vector a = makev(w2);
-    for (j = 0; j < w2; j++) // This iterates over only the first half
+    for (j = 0; j < w2; j++) // this iterates over only the first half
         a.v[j] = sqrt(fo[j][0] * fo[j][0] + fo[j][1] * fo[j][1]);
     vector a2 = spline(f, a); // a2 is now the result of the cubic spline
     L.m[i][0] = fixnan(sqrt(splinv(f, a, a2, fERBs.v[0], hi)));
-    for (j = 1; j < L.y; j++) { // Perform a bisection query at ERB intervals
+    for (j = 1; j < L.y; j++) { // perform a bisection query at ERB intervals
         hi = bilookv(f, fERBs.v[j], hi); 
         L.m[i][j] = fixnan(sqrt(splinv(f, a, a2, fERBs.v[j], hi)));
     }
@@ -113,44 +113,44 @@ void La(matrix L, vector f, vector fERBs, fftw_plan plan,
     freev(a2);
 }
 
-//  A function for populating the loudness matrix with a signal x
+// a function for populating the loudness matrix with a signal x
 matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     int i;
     int j; 
     int hi;
     int offset = 0;
-    double td = nyquist / w2; // This is equivalent to fstep
-    // Testing showed this configuration of fftw to be fastest
+    double td = nyquist / w2; // this is equivalent to fstep
+    // testing showed this configuration of fftw to be fastest
     double* fi = fftw_malloc(sizeof(double) * w); 
     fftw_complex* fo = fftw_malloc(sizeof(fftw_complex) * w);
     fftw_plan plan = fftw_plan_dft_r2c_1d(w, fi, fo, FFTW_ESTIMATE); 
-    vector hann = makev(w); // This defines the Hann[ing] window
+    vector hann = makev(w); // this defines the Hann[ing] window
     for (i = 0; i < w; i++) 
         hann.v[i] = .5 - (.5 * cos(2. * M_PI * ((double) i / w)));
     vector f = makev(w2);
     for (i = 0; i < w2; i++) 
         f.v[i] = i * td;
-    hi = bisectv(f, fERBs.v[0]); // All calls to La() will begin here
+    hi = bisectv(f, fERBs.v[0]); // all calls to La() will begin here
     matrix L = makem(ceil((double) x.x / w2) + 1, fERBs.x); 
-    for (j = 0; j < w2; j++) // Left boundary case
-        fi[j] = 0.; // More explicitly, 0. * hann.v[j]
+    for (j = 0; j < w2; j++) // left boundary case
+        fi[j] = 0.; // more explicitly, 0. * hann.v[j]
     for (/* j = w2 */; j < w; j++) 
         fi[j] = x.v[j - w2] * hann.v[j];
     La(L, f, fERBs, plan, fo, w2, hi, 0); 
-    for (i = 1; i < L.x - 2; i++) { // Middle case 
+    for (i = 1; i < L.x - 2; i++) { 
         for (j = 0; j < w; j++) 
             fi[j] = x.v[j + offset] * hann.v[j];
         La(L, f, fERBs, plan, fo, w2, hi, i); 
         offset += w2;
     }
-    for (/* i = L.x - 2; */; i < L.x; i++) { // Right two boundary cases
-        for (j = 0; j < x.x - offset; j++) // This dies at x.x + w2
+    for (/* i = L.x - 2; */; i < L.x; i++) { // right two boundary cases
+        for (j = 0; j < x.x - offset; j++) // this dies at x.x + w2
             fi[j] = x.v[j + offset] * hann.v[j];
         for (/* j = x.x - offset */; j < w; j++) 
-            fi[j] = 0.; // Once again, 0. * hann.v[j] 
+            fi[j] = 0.; // once again, 0. * hann.v[j] 
         La(L, f, fERBs, plan, fo, w2, hi, i);
         offset += w2;
-    } // Now L is fully valued
+    } // now L is fully valued
     freev(hann);
     freev(f);
     // L must now be normalized
@@ -158,11 +158,11 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
         td = 0.; // td is the value of the normalization factor
         for (j = 0; j < L.y; j++) 
             td += L.m[i][j] * L.m[i][j];
-        if (td != 0.) { // Catches zero-division
+        if (td != 0.) { // catches zero-division
             td = sqrt(td);
             for (j = 0; j < L.y; j++) 
                 L.m[i][j] /= td;
-        } // Otherwise, it is already 0.
+        } // otherwise, it is already 0.
     } 
     fftw_destroy_plan(plan); 
     fftw_free(fi); 
@@ -170,7 +170,7 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
     return(L);
 }
 
-// Populates the strength matrix using the loudness matrix
+// populates the strength matrix using the loudness matrix
 void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, 
                                             intvector ps, double dt, 
                                                 double nyquist2, int lo, 
@@ -186,14 +186,14 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
     for (i = 0; i < Slocal.x; i++) {
         vector q = makev(fERBs.x);
         for (j = 0; j < q.x; j++) q.v[j] = fERBs.v[j] / pci.v[i];
-        vector kernel = zerov(fERBs.x); // A zero-filled kernel vector
+        vector kernel = zerov(fERBs.x); // a zero-filled kernel vector
         for (j = 0; j < ps.x; j++) {
             if PRIME(ps.v[j]) {
                 for (k = 0; k < kernel.x; k++) {
                     td = fabs(q.v[k] - j - 1.); 
-                    if (td < .25) // Peaks
+                    if (td < .25) // peaks
                         kernel.v[k] = cos(2. * M_PI * q.v[k]);
-                    else if (td < .75)  // Valleys
+                    else if (td < .75)  // valleys
                         kernel.v[k] += cos(2. * M_PI * q.v[k]) / 2.;
                 }
             }
@@ -201,12 +201,12 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
         freev(q);
         td = 0.; 
         for (j = 0; j < kernel.x; j++) {
-            kernel.v[j] *= sqrt(1. / fERBs.v[j]); // Applying the envelope
+            kernel.v[j] *= sqrt(1. / fERBs.v[j]); // applying the envelope
             if (kernel.v[j] > 0.) 
                 td += kernel.v[j] * kernel.v[j];
         }
-        td = sqrt(td); // Now, td is the p=2 norm factor
-        for (j = 0; j < kernel.x; j++) // Normalize the kernel
+        td = sqrt(td); // now, td is the p=2 norm factor
+        for (j = 0; j < kernel.x; j++) // normalize the kernel
             kernel.v[j] /= td;
         for (j = 0; j < L.x; j++) { 
             for (k = 0; k < L.y; k++) 
@@ -215,7 +215,7 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
         freev(kernel);
     } // Slocal is filled out; time to interpolate
     k = 0; 
-    for (j = 0; j < S.y; j++) { // Determine the interpolation params 
+    for (j = 0; j < S.y; j++) { // determine the interpolation params 
         td = t - tp; 
         while (td >= 0.) {
             k++;
@@ -231,7 +231,7 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
     freem(Slocal);
 }
 
-// Helper function for populating the strenght matrix on left boundary
+// helper function for populating the strength matrix on left boundary
 void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, 
                                            intvector ws, intvector ps, 
                                                double nyquist, double nyquist2,
@@ -239,7 +239,7 @@ void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d,
     int i; 
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
-    int lo = 0; // The start of Sfirst-specific code
+    int lo = 0; // the start of Sfirst-specific code
     int hi = bisectv(d, 2.);
     int psz = hi - lo;
     vector mu = makev(psz);
@@ -247,21 +247,21 @@ void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d,
     for (i = 0; i < hi; i++) {
         pci.v[i] = pc.v[i];
         mu.v[i] = 1. - fabs(d.v[i] - 1.);
-    } // End of Sfirst-specific code
+    } // end of Sfirst-specific code
     Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
 }
 
-// Generic helper function for populating the strength matrix
+// generic helper function for populating the strength matrix
 void Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
                                 intvector ps, double nyquist, double nyquist2, 
                                                           double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
-    int lo = bisectv(d, n); // Start of Snth-specific code
+    int lo = bisectv(d, n); // start of Snth-specific code
     int hi = bisectv(d, n + 2);
     int psz = hi - lo;
     vector mu = makev(psz);
@@ -271,21 +271,21 @@ void Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
         pci.v[ti] = pc.v[i];
         mu.v[ti] = 1. - fabs(d.v[i] - (n + 1));
         ti++;
-    } // End of Snth-specific code
+    } // end of Snth-specific code
     Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
 }
 
-// Helper function for populating the strength matrix from the right boundary
+// helper function for populating the strength matrix from the right boundary
 void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
                                intvector ps, double nyquist, double nyquist2, 
                                                            double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
-    int lo = bisectv(d, n); // Start of Slast-specific code
+    int lo = bisectv(d, n); // start of Slast-specific code
     int hi = d.x;
     int psz = hi - lo;
     vector mu = makev(psz);
@@ -295,14 +295,14 @@ void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
         pci.v[ti] = pc.v[i];
         mu.v[ti] = 1. - fabs(d.v[i] - (n + 1));
         ti++;
-    } // End of Slast-specific code
+    } // end of Slast-specific code
     Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
 }
 
-// Peforms polynomial tuning on the strength matrix to determine the pitch
+// performs polynomial tuning on the strength matrix to determine the pitch
 vector pitch(matrix S, vector pc, double st) {
     int i;
     int j;
@@ -327,9 +327,9 @@ vector pitch(matrix S, vector pc, double st) {
                 maxi = i;
             }
         }
-        if (maxv > st) { // Make sure it's big enough
+        if (maxv > st) { // make sure it's big enough
             if (maxi == 0 || maxi == S.x - 1) p.v[j] = pc.v[0];
-            else { // Generic case
+            else { // general case
                 tc2 = 1. / pc.v[maxi];
                 log2pc = log2(pc.v[maxi - 1]); 
                 s.v[0] = S.m[maxi - 1][j];
@@ -337,14 +337,14 @@ vector pitch(matrix S, vector pc, double st) {
                 s.v[2] = S.m[maxi + 1][j]; 
                 coefs = polyfit(ntc, s, 2); 
                 maxv = SHRT_MIN; 
-                for (i = 0; i < search; i++) { // Check the nftc space
+                for (i = 0; i < search; i++) { // check the nftc space
                     nftc = polyval(coefs, ((1. / pow(2, i * POLYV + log2pc)) / 
                                                           tc2 - 1) * 2 * M_PI);
                     if (nftc > maxv) {
                         maxv = nftc;
                         maxi = i;
                     }
-                } // Now we've got the pitch numbers we need
+                } // now we've got the pitch numbers we need
                 freev(coefs);
                 p.v[j] = pow(2, log2pc + (maxi * POLYV));
             }
@@ -356,7 +356,7 @@ vector pitch(matrix S, vector pc, double st) {
     return(p);
 }
 
-// Primary utility function for each pitch extraction
+// primary utility function for each pitch extraction
 vector swipe(int fid, double min, double max, double st, double dt) {
     int i; 
     double td = 0.;
@@ -386,9 +386,9 @@ vector swipe(int fid, double min, double max, double st, double dt) {
         pc.v[i] = pow(2, td);
         d.v[i] = 1. + td - log2(nyquist16 / ws.v[0]); 
     } // td now equals log2(min)
-    vector x = makev(info.frames); // This reads the signal in
+    vector x = makev(info.frames); // read in the signal
     sf_read_double(source, x.v, x.x);
-    sf_close(source); // Takes FILE* wavf with it, too
+    sf_close(source); // takes wavf with it, too
     vector fERBs = makev(ceil((hz2erb(nyquist) - 
                                hz2erb(pow(2, td) / 4)) / DERBS));
     td = hz2erb(min / 4.);
@@ -396,8 +396,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
         fERBs.v[i] = erb2hz(td + (i * DERBS));
     intvector ps = onesiv(floor(fERBs.v[fERBs.x - 1] / pc.v[0] - .75));
     sieve(ps);
-    ps.v[0] = PR; // Hack to make 1 "act" prime...don't ask 
-    matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt)); // Strength
+    ps.v[0] = PR; // hack to make 1 "act" prime...don't ask
+    matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt)); // strength
     Sfirst(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, 0); 
     for (i = 1; i < ws.x - 1; i++) // S is updated inline here
         Snth(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, i);
@@ -408,18 +408,18 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     freeiv(ps);
     freev(d);  
     freev(x);
-    vector p = pitch(S, pc, st); // Find pitch using strength matrix
+    vector p = pitch(S, pc, st); // find pitch using strength matrix
     freev(pc);
     freem(S);
     return(p);
 }
 
-// A Python version of the call
+// a Python version of the call
 vector pyswipe(char wav[], double min, double max, double st, double dt) {
     return swipe(fileno(fopen(wav, "r")), min, max, st, dt);
 }
 
-// Function for printing the pitch vector returned by swipe()
+// function for printing the pitch vector returned by swipe()
 void printp(vector p, int fid, double dt, int mel, int vlo) {
     int i;
     double t = 0.; 
@@ -456,7 +456,7 @@ void printp(vector p, int fid, double dt, int mel, int vlo) {
     } 
 }
 
-// Main method, interfacing with user arguments
+// main method, interfacing with user arguments
 int main(int argc, char* argv[]) {
     char output[] = "OUTPUT:\npitch_0\ttime_0\npitch_1\ttime_1\n...\t...\
     \npitch_N\ttime_N\n\n"; 
@@ -470,7 +470,7 @@ swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
 -i FILE\t\tinput file\t\t\t\t\tSTDIN\n\
 -o FILE\t\toutput file\t\t\t\t\tSTDOUT\n\
--b LIST\t\tbatch mode: [LIST is a file containing\n\
+-b LIST\t\tbatch mode [LIST is a file containing\n\
 \t\tone \"INPUT OUTPUT\" pair per line]\n\n\
 -r MIN:MAX\tpitchrange in Hertz\t\t\t\t100:600\n\
 -s TIMESTEP\ttimestep in seconds\t\t\t\t0.001\n\
@@ -479,7 +479,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
 -n\t\tDon't output voiceless frames\t\t\tno\n\
 -h\t\tDisplay this message, then quit\n\
 -v\t\tDisplay version number, then quit\n\n";
-    double st = ST; // All set by #defines
+    // all set by #defines
+    double st = ST; 
     double dt = DT;
     int vlo = TRUE;
     int mel = FALSE; 
@@ -487,10 +488,7 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
     double max = MAX; 
     int ch;
     FILE* batch = NULL; // not going to be read that way,
-    /* 
-     * initialize the char[] as "\0"-initial. Some toolkits, but not all, 
-     * do this.
-     */
+    // some, but not all, compilers initialize char*s to be "\0"
     char* wav = "\0"; 
     char* out = "\0";
     int needed;
@@ -541,8 +539,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
             case 'v':
                 fprintf(stderr, "This is SWIPE', v. %1.1f.\n", VNUM); 
                 exit(EXIT_SUCCESS);
-            case '?': 
-            default:  // Would like to do clever things here, but no ideas yet
+            case '?':
+            default: 
                 fprintf(stderr, "%s", header);
                 fprintf(stderr, "%s", synops);
                 exit(EXIT_FAILURE);
@@ -550,7 +548,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
             argv += optind;
         }
     }
-    if (min < 1.) { // Santiny-check the args
+    // santiny-check the args
+    if (min < 1.) { 
         fprintf(stderr, "Min pitch < 1 Hz, aborting.\n"); 
         exit(EXIT_FAILURE);
     }
@@ -566,7 +565,8 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
         fprintf(stderr, "Timestep must be >= 0.001, set to %.3f.\n", DT);
         dt = DT;
     }
-    if (batch != NULL) { // Iterate through batch pairs
+    if (batch != NULL) { 
+        // iterate through batch pairs
         while (fscanf(batch, "%s %s", wav, out) != EOF) {
             printf("%s -> %s...", wav, out);
             FILE* wf = fopen(wav, "r");

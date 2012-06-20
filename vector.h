@@ -1,4 +1,4 @@
-/* Copyright (c) 2009-2011 Kyle Gorman
+/* Copyright (c) 2009-2012 Kyle Gorman
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to 
@@ -23,7 +23,10 @@
  */
 
 // vector stuff
-typedef struct                   { int x; double* v; } vector;
+typedef struct { 
+    int x; 
+    double* v; 
+} vector;
 
 vector                            makev(int);
 vector                            zerov(int);
@@ -40,7 +43,9 @@ void                              freev(vector);
 void                              printv(vector);
 
 // intvector stuff
-typedef struct                    { int x; int* v; } intvector;
+typedef struct { 
+    int x; int* v; 
+} intvector;
 
 intvector                         makeiv(int);
 intvector                         zeroiv(int);
@@ -58,7 +63,10 @@ void                              freeiv(intvector);
 void                              printiv(intvector);
 
 // matrix stuff
-typedef struct                   { int x; int y; double** m; } matrix;
+typedef struct { 
+    int x; 
+    int y; 
+    double** m; } matrix;
 
 matrix                            makem(int, int);
 matrix                            zerom(int, int); 
@@ -69,7 +77,10 @@ void                              freem(matrix);
 void                              printm(matrix);
 
 // intmatrix stuff
-typedef struct                    { int x; int y; int** m; } intmatrix;
+typedef struct { 
+    int x; 
+    int y; 
+    int** m; } intmatrix;
 
 intmatrix                         makeim(int, int);
 intmatrix                         zeroim(int, int); 
