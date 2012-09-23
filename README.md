@@ -1,4 +1,4 @@
-SWIPE' pitch estimator, v. 1.4
+SWIPE' pitch estimator, v. 1.5
 ==============================
 
 Based on Camacho, Arturo. A sawtooth waveform inspired pitch estimator for
@@ -17,9 +17,6 @@ How to install:
 For all platforms: To compile, type `make` at the terminal. To install, type 
 `make install` at the terminal. You may specify `--prefix=PATH/TO/LOCATION` if
 you wish; the default is `/usr/local`, which places swipe in `/usr/local/bin`.
-
-If you do not wish to have make use of Python support, you can install the 
-binary only by issuing `make c installc`.
   
 Linux: All the large libraries should be available as packages if you're using 
 a "modern" distro. For instance, on a Ubuntu system (Ubuntu 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran:

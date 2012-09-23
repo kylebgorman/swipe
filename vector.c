@@ -50,7 +50,8 @@ vector makev(int xSz) {
 vector zerov(int xSz) { 
     int i;
     vector nw_vector = makev(xSz);
-    for (i = 0; i < nw_vector.x; i++) nw_vector.v[i] = 0.;
+    for (i = 0; i < nw_vector.x; i++) 
+        nw_vector.v[i] = 0.;
     return(nw_vector); 
 }
 
@@ -58,7 +59,8 @@ vector zerov(int xSz) {
 vector onesv(int xSz) { 
     int i;
     vector nw_vector = makev(xSz);
-    for (i = 0; i < nw_vector.x; i++) nw_vector.v[i] = 1.;
+    for (i = 0; i < nw_vector.x; i++) 
+        nw_vector.v[i] = 1.;
     return(nw_vector); 
 }
 
@@ -66,7 +68,8 @@ vector onesv(int xSz) {
 vector nansv(int xSz) { 
     int i;
     vector nw_vector = makev(xSz);
-    for (i = 0; i < nw_vector.x; i++) nw_vector.v[i] = NAN;
+    for (i = 0; i < nw_vector.x; i++) 
+        nw_vector.v[i] = NAN;
     return(nw_vector); 
 }
 
@@ -85,7 +88,8 @@ void freev(vector yr_vector) {
 // print the vector
 void printv(vector yr_vector) { 
     int i;
-    for (i = 0; i < yr_vector.x; i++) printf("%f\n", yr_vector.v[i]);
+    for (i = 0; i < yr_vector.x; i++) 
+        printf("%f\n", yr_vector.v[i]);
 }
 
 // return the index of the maximum value of the vector
@@ -123,8 +127,10 @@ int bisectv(vector yr_vector, double key) {
     int hi = yr_vector.x;                   
     while (hi - lo > 1) {
         md = (hi + lo) >> 1;
-        if (yr_vector.v[md] > key) hi = md;
-        else lo = md;
+        if (yr_vector.v[md] > key) 
+            hi = md;
+        else 
+            lo = md;
     }
     return(hi);
 }
@@ -140,8 +146,10 @@ int bilookv(vector yr_vector, double key, int lo) {
     lo--;                                         
     while (hi - lo > 1) {                         
         md = (hi + lo) >> 1;                      
-        if (yr_vector.v[md] > key) hi = md; 
-        else lo = md;
+        if (yr_vector.v[md] > key) 
+            hi = md; 
+        else 
+            lo = md;
     }
     return(hi);
 }
@@ -158,14 +166,16 @@ intvector makeiv(int xSz) {
 intvector zeroiv(int xSz) {
     int i;
     intvector nw_vector = makeiv(xSz);
-    for (i = 0; i < nw_vector.x; i++) nw_vector.v[i] = 0;
+    for (i = 0; i < nw_vector.x; i++) 
+        nw_vector.v[i] = 0;
     return(nw_vector);
 }
 
 intvector onesiv(int xSz) {
     int i;
     intvector nw_vector = makeiv(xSz);
-    for (i = 0; i < nw_vector.x; i++) nw_vector.v[i] = 1;
+    for (i = 0; i < nw_vector.x; i++) 
+        nw_vector.v[i] = 1;
     return(nw_vector);
 }
 
@@ -179,7 +189,8 @@ intvector copyiv(intvector yr_vector) {
 vector iv2v(intvector yr_vector) {
     int i; 
     vector nw_vector = makev(yr_vector.x);
-    for (i = 0; i < yr_vector.x; i++) nw_vector.v[i] = yr_vector.v[i]; 
+    for (i = 0; i < yr_vector.x; i++) 
+        nw_vector.v[i] = yr_vector.v[i]; 
     return(nw_vector);
 }
 
@@ -189,7 +200,8 @@ void freeiv(intvector yr_vector) {
 
 void printiv(intvector yr_vector) {
     int i;
-    for (i = 0; i < yr_vector.x; i++) printf("%d\n", yr_vector.v[i]);
+    for (i = 0; i < yr_vector.x; i++) 
+        printf("%d\n", yr_vector.v[i]);
 }
 
 int maxiv(intvector yr_vector) { 
@@ -224,8 +236,10 @@ int bisectiv(intvector yr_vector, int key) {
     int hi = yr_vector.x;                    
     while (hi - lo > 1) {
         md = (hi + lo) >> 1;
-        if (yr_vector.v[md] > key) hi = md;
-        else lo = md;
+        if (yr_vector.v[md] > key) 
+            hi = md;
+        else 
+            lo = md;
     }
     return(hi);
 }
@@ -236,8 +250,10 @@ int bilookiv(intvector yr_vector, int key, int lo) {
     lo--;
     while (hi - lo > 1) {
         md = (hi + lo) >> 1;
-        if (yr_vector.v[md] > key) hi = md;
-        else lo = md;
+        if (yr_vector.v[md] > key) 
+            hi = md;
+        else 
+            lo = md;
     }
     return(hi);
 }
@@ -250,9 +266,8 @@ matrix makem(int xSz, int ySz) {
     nw_matrix.x = xSz;
     nw_matrix.y = ySz;
     nw_matrix.m = malloc(sizeof(double*) * xSz);
-    for (i = 0; i < nw_matrix.x; i++) {
+    for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = malloc(sizeof(double) * ySz);
-    }
     return(nw_matrix);
 }
 
@@ -260,9 +275,9 @@ matrix zerom(int xSz, int ySz) {
     int i;
     int j;
     matrix nw_matrix = makem(xSz, ySz);
-    for (i = 0; i < nw_matrix.x; i++) {
-        for (j = 0; j < nw_matrix.y; j++) nw_matrix.m[i][j] = 0.;
-    }
+    for (i = 0; i < nw_matrix.x; i++)
+        for (j = 0; j < nw_matrix.y; j++) 
+            nw_matrix.m[i][j] = 0.;
     return(nw_matrix);
 }
 
@@ -270,9 +285,9 @@ matrix onesm(int xSz, int ySz) {
     int i; 
     int j;
     matrix nw_matrix = makem(xSz, ySz);
-    for (i = 0; i < nw_matrix.x; i++) {
-        for (j = 0; j < nw_matrix.y; j++) nw_matrix.m[i][j] = 1.;
-    }
+    for (i = 0; i < nw_matrix.x; i++)
+        for (j = 0; j < nw_matrix.y; j++) 
+            nw_matrix.m[i][j] = 1.;
     return(nw_matrix);
 }
 
@@ -280,9 +295,9 @@ matrix nansm(int xSz, int ySz) {
     int i;
     int j;
     matrix nw_matrix = makem(xSz, ySz);
-    for (i = 0; i < nw_matrix.x; i++) {
-        for (j = 0; j < nw_matrix.y; j++) nw_matrix.m[i][j] = NAN;
-    }
+    for (i = 0; i < nw_matrix.x; i++)
+        for (j = 0; j < nw_matrix.y; j++) 
+            nw_matrix.m[i][j] = NAN;
     return(nw_matrix);
 }
 
@@ -297,7 +312,8 @@ matrix copym(matrix yr_matrix) {
 
 void freem(matrix yr_matrix) {
     int i;
-    for (i = 0; i < yr_matrix.x; i++) free(yr_matrix.m[i]);
+    for (i = 0; i < yr_matrix.x; i++) 
+        free(yr_matrix.m[i]);
     free(yr_matrix.m);
 }
 
@@ -305,7 +321,8 @@ void printm(matrix yr_matrix) {
     int i;
     int j;
     for (i = 0; i < yr_matrix.x; i++) {
-        for (j = 0; j < yr_matrix.y; j++) printf("%f\t", yr_matrix.m[i][j]);
+        for (j = 0; j < yr_matrix.y; j++)
+            printf("%f\t", yr_matrix.m[i][j]);
         printf("\n");
     }
 }
@@ -318,9 +335,8 @@ intmatrix makeim(int xSz, int ySz) {
     nw_matrix.y = ySz;
     nw_matrix.m = malloc(sizeof(int) * xSz);
     int i;
-    for (i = 0; i < nw_matrix.x; i++) {
+    for (i = 0; i < nw_matrix.x; i++)
         nw_matrix.m[i] = malloc(sizeof(int) * ySz);
-    }
     return(nw_matrix);
 }
 
@@ -328,9 +344,9 @@ intmatrix zeroim(int xSz, int ySz) {
     int i; 
     int j;
     intmatrix nw_matrix = makeim(xSz, ySz);
-    for (i = 0; i < nw_matrix.x; i++) {
-        for (j = 0; j < nw_matrix.y; j++) nw_matrix.m[i][j] = 0;
-    }
+    for (i = 0; i < nw_matrix.x; i++)
+        for (j = 0; j < nw_matrix.y; j++) 
+            nw_matrix.m[i][j] = 0;
     return(nw_matrix);
 }
 
@@ -338,18 +354,17 @@ intmatrix onesim(int xSz, int ySz) {
     int i;
     int j;
     intmatrix nw_matrix = makeim(xSz, ySz);
-    for (i = 0; i < nw_matrix.x; i++) {
-        for (j = 0; j < nw_matrix.y; j++) nw_matrix.m[i][j] = 1;
-    }
+    for (i = 0; i < nw_matrix.x; i++)
+        for (j = 0; j < nw_matrix.y; j++) 
+            nw_matrix.m[i][j] = 1;
     return(nw_matrix);
 }
 
 intmatrix copyim(intmatrix yr_matrix) { 
     int i;
     intmatrix nw_matrix = makeim(yr_matrix.x, yr_matrix.y);
-    for (i = 0; i < yr_matrix.x; i++) { // does not assume contiguous memory
+    for (i = 0; i < yr_matrix.x; i++) // does not assume contiguous memory
         memcpy(nw_matrix.m[i], yr_matrix.m[i], sizeof(int) * yr_matrix.y);
-    }
     return(nw_matrix);
 }
 
@@ -357,17 +372,16 @@ matrix im2m(intmatrix yr_matrix) {
     int i;
     int j;
     matrix nw_matrix = makem(yr_matrix.x, yr_matrix.y);
-    for (i = 0; i < yr_matrix.x; i++) {
-        for (j = 0; j < yr_matrix.y; j++) {
+    for (i = 0; i < yr_matrix.x; i++)
+        for (j = 0; j < yr_matrix.y; j++)
             nw_matrix.m[i][j] = yr_matrix.m[i][j]; 
-        }
-    }
     return(nw_matrix);
 }
 
 void freeim(intmatrix yr_matrix) {
     int i;
-    for (i = 0; i < yr_matrix.x; i++) free(yr_matrix.m[i]);
+    for (i = 0; i < yr_matrix.x; i++)
+        free(yr_matrix.m[i]);
     free(yr_matrix.m);
 }
 
@@ -375,7 +389,8 @@ void printim(intmatrix yr_matrix) {
     int i; 
     int j;
     for (i = 0; i < yr_matrix.x; i++) {
-        for (j = 0; j < yr_matrix.y; j++) printf("%d\t", yr_matrix.m[i][j]);
+        for (j = 0; j < yr_matrix.y; j++)
+            printf("%d\t", yr_matrix.m[i][j]);
         printf("\n");
     }
 }
@@ -389,13 +404,13 @@ int sieve(intvector ones) {
     ones.v[0] = NP; // Because 1 is not prime (though sometimes we wish it was)
     for (i = 1; i < sp; i++) { 
         if PRIME(ones.v[i]) {
-            for (j = i + i + 1; j < ones.x; j += i + 1) 
+            for (j = i + i + 1; j < ones.x; j += i + 1)
                 ones.v[j] = NP;
             k++;
         }
     }
     for (i = sp; i < ones.x; i++) { // Now we're only counting
-        if PRIME(ones.v[i]) 
+        if PRIME(ones.v[i])
             k++;
     }
     return(k); 
@@ -406,10 +421,9 @@ intvector primes(int n) {
     int j = 0;
     intvector myOnes = onesiv(n);
     intvector myPrimes = makeiv(sieve(myOnes)); // size of the # of primes
-    for (i = 0; i < myOnes.x; i++) { // could start at 1, unless we're hacking
+    for (i = 0; i < myOnes.x; i++) // could start at 1, unless we're hacking
         if PRIME(myOnes.v[i]) 
             myPrimes.v[j++] = i + 1;
-    }
     freeiv(myOnes);
     return(myPrimes);
 }
@@ -440,9 +454,8 @@ vector spline(vector x, vector y) {
                                (y.v[y.x - 1] - y.v[y.x -  2]) / (x.v[x.x - 1] -
                                     x.v[x.x - 2])) - qn * u[x.x - 2]) /
                                              (qn * y2.v[y2.x - 2] + 1.);
-    for (j = x.x - 2; j >= 0; j--) { // backsubstitution loop
+    for (j = x.x - 2; j >= 0; j--) // backsubstitution loop
         y2.v[j] = y2.v[j] * y2.v[j + 1] + u[j];
-    }
     free(u); 
     return(y2);
 }
@@ -467,13 +480,12 @@ vector polyfit(vector A, vector B, int order) {
     int info;
     order++; // I find it intuitive this way...
     double* Ap = malloc(sizeof(double) * order * A.x); 
-    for (i = 0; i < order; i++) {                      
-        for (j = 0; j < A.x; j++) {                    
-            Ap[i * A.x + j] = pow(A.v[j], order - i - 1); // Mimics MATLAB
-        }
-    }
+    for (i = 0; i < order; i++)
+        for (j = 0; j < A.x; j++) 
+            Ap[i * A.x + j] = pow(A.v[j], order - i - 1); // mimics MATLAB
     vector Bp = makev(order >= B.x ? order : B.x); 
-    for (i = 0; i < B.x; i++) Bp.v[i] = B.v[i];
+    for (i = 0; i < B.x; i++)
+        Bp.v[i] = B.v[i];
     i = 1; // nrhs, j is info
     j = A.x + order; // lwork
     double* work = malloc(sizeof(double) * j);
@@ -491,9 +503,8 @@ vector polyfit(vector A, vector B, int order) {
 double polyval(vector coefs, double val) {
     int i;                                 
     double sum = 0.;                       
-    for (i = 0; i < coefs.x; i++) {
+    for (i = 0; i < coefs.x; i++)
         sum += coefs.v[i] * pow(val, coefs.x  - i - 1);
-    }
     return(sum);
 }
 
@@ -506,9 +517,8 @@ int main(void) {
 
     printf("VECTOR example\n");
     vector a = makev(10);    
-    for (i = 0; i < a.x; i++) {
+    for (i = 0; i < a.x; i++)
         a.v[i] = i * i;
-    }
     vector b = copyv(a);
     printv(b);
     freev(a);
@@ -517,9 +527,8 @@ int main(void) {
     
     printf("INTVECTOR example\n");
     intvector c = makeiv(10);    
-    for (i = 0; i < c.x; i++) {
+    for (i = 0; i < c.x; i++)
         c.v[i] = i * i;
-    }
     intvector d = copyiv(c);
     printiv(d);
     freeiv(c);
@@ -537,11 +546,9 @@ int main(void) {
 
     printf("MATRIX example\n");
     matrix e = makem(20, 3);
-    for (i = 0; i < e.x; i++) {
-        for (j = 0; j < e.y; j++) {
+    for (i = 0; i < e.x; i++)
+        for (j = 0; j < e.y; j++)
             e.m[i][j] = i * i + j;
-        }
-    }
     matrix f = copym(e);
     printm(f);
     freem(e);
@@ -550,11 +557,9 @@ int main(void) {
 
     printf("INTMATRIX example\n");
     intmatrix g = makeim(20, 3);
-    for (i = 0; i < g.x; i++) {
-        for (j = 0; j < g.y; j++) {
+    for (i = 0; i < g.x; i++) 
+        for (j = 0; j < g.y; j++)
             g.m[i][j] = i * i + j;
-        }
-    }
     intmatrix h = copyim(g);
     printim(h);
     freeim(g);
@@ -567,13 +572,11 @@ int main(void) {
 
     printf("BILOOK example\n");
     vector fives = makev(300); 
-    for (i = 0; i < fives.x; i++) { 
+    for (i = 0; i < fives.x; i++)
         fives.v[i] = (i + 10) * 5.;
-    }
     vector twenties = makev(100);
-    for (i = 0; i < twenties.x; i++) {
+    for (i = 0; i < twenties.x; i++)
         twenties.v[i] = i * 20.;
-    }
     printf("searching for values of vector fives in twenties...\n");
     printf("fives (sz:%d): %f < x < %f\n", fives.x, fives.v[minv(fives)], 
                                                     fives.v[maxv(fives)]);

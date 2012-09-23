@@ -22,7 +22,7 @@
  * Kyle Gorman
  */
 
-#define VNUM    1.4 // current version
+#define VNUM    1.5 // current version
 
 #include <math.h>
 #include <stdio.h>

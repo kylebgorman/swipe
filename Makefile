@@ -1,37 +1,37 @@
-# By default, "make; make install" gives you Python support. If you don't want 
-# this, then you can run "make c installc". If you want control the 
-# installation root (e.g., /, /usr, /usr/local), set the $PREFIX environmental
-# variable. "bin" is appended automatically. Similarly, you can make a binary
-# called something other than "swipe" by setting the $TARGET environmental
-# variable.
-
-TARGET=swipe
 PREFIX=/usr/local
-
 CFLAGS=-O2
 
-all: c py
-install: installc installpy
+TARGET=swipe
+WRAPPER=$(TARGET)_wrap.c
+PYWRAP=$(TARGET).py
+PYLIBS=build/
 
-c:
-	$(CC) $(CFLAGS) -o $(TARGET) swipe.c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+all: $(TARGET) $(PYLIBS)
 
-py:
-	swig -python -threads swipe.i
+$(TARGET):
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
+
+$(WRAPPER) $(PYWRAP):
+	swig -python -threads $(TARGET).i
+
+$(PYLIBS): $(WRAPPER) $(PYWRAP)
 	python setup.py build
 
-installc: swipe
-	install swipe $(PREFIX)/bin
+install: installc installpy
 
-installpy: swipe
+installc: $(TARGET)
+	install $(TARGET) $(PREFIX)/bin
+
+installpy: $(PYLIBS)
 	python setup.py install
 
 clean: 
-	python setup.py clean
-	$(RM) -r build/ $(TARGET) swipe.py swipe.pyc swipe_wrap.c
+	$(RM) -r $(PYLIBS) $(TARGET) $(WRAPPER) $(PYWRAP)
 
 test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
-	./swipe -ni king.wav
+	./$(TARGET) -ni king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
-	rm king.wav
+	$(RM) king.wav
+
+.PHONY: clean install test

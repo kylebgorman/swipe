@@ -25,6 +25,6 @@
 
 from distutils.core import setup, Extension
 
-setup(name='swipe', version='1.4', author='Kyle Gorman', 
+setup(name='swipe', version='1.5', author='Kyle Gorman', 
 description="""SWIPE' pitch estimator""", py_modules=['swipe'], 
 ext_modules=[Extension('_swipe', sources=['vector.c', 'swipe.c', 'swipe_wrap.c'], libraries=['sndfile', 'lapack', 'fftw3'])])

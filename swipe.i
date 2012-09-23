@@ -45,10 +45,13 @@ from math import log, fsum, isnan, sqrt
 
 def _mean(x):
     """ 
-    Compute mean. Seems to be much faster than using Numpy, though other 
-    things aren't
+    Compute mean. Seems to be much faster than using Numpy
     """
     return fsum(x) / len(x)
+
+
+def _median(x):
+    return NP.median(x)
 
 
 def _regress(x, y):
@@ -78,7 +81,7 @@ class Swipe(object):
         show_nan = if True, voiceless intervals are returned, marked as nan.
         """
         # Get Python path, just in case someone passed a file object
-        f = path if isinstance(path, str) else path.name
+        f = path if hasattr(path, 'read') else path.name
         # check the path, quickly
         if not access(f, R_OK): 
             raise(IOError('File "{0}" not found'.format(f)))
@@ -86,13 +89,16 @@ class Swipe(object):
         P = pyswipe(f, pmin, pmax, st, dt)
         # get function
         conv = None
-        if mel: conv = lambda hz: 1127.01048 * log(1. + hz / 700.)
-        else: conv = lambda hz: hz
+        if mel: 
+            conv = lambda hz: 1127.01048 * log(1. + hz / 700.)
+        else: 
+            conv = lambda hz: hz
         # generate
         tt = 0.
         self.t = []
         self.p = []
-        if P.x < 1: raise ValueError('Failed to read audio')
+        if P.x < 1: 
+            raise(ValueError('Failed to read audio'))
         for i in range(P.x):
             val = doublea_getitem(P.v, i)
             if not isnan(val):
@@ -100,18 +106,14 @@ class Swipe(object):
                 self.p.append(conv(val))
             tt += dt
 
-
     def __str__(self):
         return '<Swipe pitch track with {0} points>'.format(len(self.t))
-
 
     def __len__(self):
         return len(self.t)
 
-
     def __iter__(self):
         return iter(zip(self.t, self.p))
-
 
     def __getitem__(self, t):
         """ 
@@ -124,7 +126,6 @@ class Swipe(object):
             return self.p[i - 1]
         else:
             return self.p[i]
-
 
     def _bisect(self, tmin=None, tmax=None):
         """ 
@@ -140,7 +141,6 @@ class Swipe(object):
         else:
             return (bisect(self.t, tmin), bisect(self.t, tmax))
 
-
     def slice(self, tmin=None, tmax=None):
         """ 
         Slice out samples outside of s [tmin, tmax] inline 
@@ -152,7 +152,6 @@ class Swipe(object):
         else:
             raise ValueError, 'At least one of tmin, tmax must be defined'
 
-
     def mean(self, tmin=None, tmax=None):
         """ 
         Return pitch mean 
@@ -163,19 +162,16 @@ class Swipe(object):
         else:
             return _mean(self.p)
 
-
     def median(self, tmin=None, tmax=None):
         """
         Return pitch median
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            return NP.median(self.p[i:j])
+            return _median(self.p[i:j])
         else:
-            return NP.median(self.p)
+            return _median(self.p)
     
-
-
     def var(self, tmin=None, tmax=None):
         """ 
         Return pitch variance 
