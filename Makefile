@@ -2,8 +2,7 @@ PREFIX=/usr/local
 CFLAGS=-O2
 
 TARGET=swipe
-WRAPPER=$(TARGET)_wrap.c
-PYWRAP=$(TARGET).py
+WRAPPERS=$(TARGET)_wrap.c $(TARGET).py
 PYLIBS=build/
 
 all: $(TARGET) $(PYLIBS)
@@ -11,10 +10,10 @@ all: $(TARGET) $(PYLIBS)
 $(TARGET):
 	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c vector.c -lm -lc -lblas -llapack -lfftw3 -lsndfile
 
-$(WRAPPER) $(PYWRAP):
+$(WRAPPERS):
 	swig -python -threads $(TARGET).i
 
-$(PYLIBS): $(WRAPPER) $(PYWRAP)
+$(PYLIBS): $(WRAPPERS)
 	python setup.py build
 
 install: installc installpy
@@ -26,7 +25,7 @@ installpy: $(PYLIBS)
 	python setup.py install
 
 clean: 
-	$(RM) -r $(PYLIBS) $(TARGET) $(WRAPPER) $(PYWRAP)
+	$(RM) -r $(TARGET) $(WRAPPERS) $(PYLIBS)
 
 test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav

@@ -81,7 +81,7 @@ class Swipe(object):
         show_nan = if True, voiceless intervals are returned, marked as nan.
         """
         # Get Python path, just in case someone passed a file object
-        f = path if hasattr(path, 'read') else path.name
+        f = path.name if hasattr(path, 'read') else path
         # check the path, quickly
         if not access(f, R_OK): 
             raise(IOError('File "{0}" not found'.format(f)))
