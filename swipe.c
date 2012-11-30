@@ -1,22 +1,23 @@
 /* Copyright (c) 2009-2012 Kyle Gorman
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the 
+ * "Software"), to deal in the Software without restriction, including 
+ * without limitation the rights to use, copy, modify, merge, publish, 
+ * distribute, sublicense, and/or sell copies of the Software, and to 
+ * permit persons to whom the Software is furnished to do so, subject to 
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included 
+ * in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  * swipe.c: primary functions
  * Kyle Gorman
@@ -105,7 +106,7 @@ void La(matrix L, vector f, vector fERBs, fftw_plan plan,
         a.v[j] = sqrt(fo[j][0] * fo[j][0] + fo[j][1] * fo[j][1]);
     vector a2 = spline(f, a); // a2 is now the result of the cubic spline
     L.m[i][0] = fixnan(sqrt(splinv(f, a, a2, fERBs.v[0], hi)));
-    for (j = 1; j < L.y; j++) { // perform a bisection query at ERB intervals
+    for (j = 1; j < L.y; j++) { // perform a bisection query at ERB intvls
         hi = bilookv(f, fERBs.v[j], hi); 
         L.m[i][j] = fixnan(sqrt(splinv(f, a, a2, fERBs.v[j], hi)));
     }
@@ -114,7 +115,7 @@ void La(matrix L, vector f, vector fERBs, fftw_plan plan,
 }
 
 // a function for populating the loudness matrix with a signal x
-matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
+matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) {
     int i;
     int j; 
     int hi;
@@ -173,8 +174,8 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) { // L
 // populates the strength matrix using the loudness matrix
 void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, 
                                             intvector ps, double dt, 
-                                                double nyquist2, int lo, 
-                                                    int hi, int psz, int w2) {
+                                            double nyquist2, int lo, 
+                                            int hi, int psz, int w2) {
     int i;
     int j;
     int k; 
@@ -279,9 +280,10 @@ void Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
 }
 
 // helper function for populating the strength matrix from the right boundary
-void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
-                               intvector ps, double nyquist, double nyquist2, 
-                                                           double dt, int n) {
+void Slast(matrix S, vector x, vector pc, vector fERBs, vector d, 
+                                          intvector ws, intvector ps, 
+                                          double nyquist, double nyquist2, 
+                                          double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -338,8 +340,8 @@ vector pitch(matrix S, vector pc, double st) {
                 coefs = polyfit(ntc, s, 2); 
                 maxv = SHRT_MIN; 
                 for (i = 0; i < search; i++) { // check the nftc space
-                    nftc = polyval(coefs, ((1. / pow(2, i * POLYV + log2pc)) / 
-                                                          tc2 - 1) * 2 * M_PI);
+                    nftc = polyval(coefs, ((1. / pow(2, i * POLYV + 
+                                   log2pc)) / tc2 - 1) * 2 * M_PI);
                     if (nftc > maxv) {
                         maxv = nftc;
                         maxi = i;
@@ -349,7 +351,8 @@ vector pitch(matrix S, vector pc, double st) {
                 p.v[j] = pow(2, log2pc + (maxi * POLYV));
             }
         }
-        else p.v[j] = NAN;
+        else 
+            p.v[j] = NAN;
     }
     freev(ntc);
     freev(s);
@@ -369,7 +372,8 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     double nyquist16 = info.samplerate * 8.;
     if (max > nyquist) {
         max = nyquist;
-        fprintf(stderr, "Max pitch > Nyquist...max set to %.2f Hz.\n", max);
+        fprintf(stderr, "Max pitch exceeds Nyquist frequency...");
+        fprintf(stderr, "max pitch set to %.2f Hz.\n", max);
     }
     if (dt > nyquist2) {
         dt = nyquist2;
@@ -377,7 +381,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     }
     intvector ws = makeiv(round(log2((nyquist16) / min) -  
                                 log2((nyquist16) / max)) + 1); 
-    for (i = 0; i < ws.x; i++) 
+    for (i = 0; i < ws.x; i++)
         ws.v[i] = pow(2, round(log2(nyquist16 / min))) / pow(2, i);
     vector pc = makev(ceil((log2(max) - log2(min)) / DLOG2P));
     vector d = makev(pc.x);
@@ -397,7 +401,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     intvector ps = onesiv(floor(fERBs.v[fERBs.x - 1] / pc.v[0] - .75));
     sieve(ps);
     ps.v[0] = PR; // hack to make 1 "act" prime...don't ask
-    matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt)); // strength
+    matrix S = zerom(pc.x, ceil(((double) x.x / nyquist2) / dt));
     Sfirst(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, 0); 
     for (i = 1; i < ws.x - 1; i++) // S is updated inline here
         Snth(S, x, pc, fERBs, d, ws, ps, nyquist, nyquist2, dt, i);
@@ -460,16 +464,16 @@ void printp(vector p, int fid, double dt, int mel, int vlo) {
 int main(int argc, char* argv[]) {
     char output[] = "OUTPUT:\npitch_0\ttime_0\npitch_1\ttime_1\n...\t...\
     \npitch_N\ttime_N\n\n"; 
-    char header[] = "SWIPE' pitch tracker, implemented in C by Kyle Gorman \
-<kgorman@ling.upenn.edu>.\nBased on: Camacho, Arturo (2007). A sawtooth \
+    char header[] = "\nSWIPE' pitch tracker, implemented by Kyle Gorman \
+<kgorman@ling.upenn.edu>, \nbased on: A. Camacho. 2007. A sawtooth \
 waveform inspired pitch estimator\nfor speech and music. Doctoral \
-dissertation, University of Florida.\n\n\
+dissertation, U of Florida.\n\n\
 More information: <http://ling.upenn.edu/~kgorman/C/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
 swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
 FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
--i FILE\t\tinput file\t\t\t\t\tSTDIN\n\
--o FILE\t\toutput file\t\t\t\t\tSTDOUT\n\
+-i FILE\t\tinput file\t\t\t\t\t<STDIN>\n\
+-o FILE\t\toutput file\t\t\t\t\t<STDOUT>\n\
 -b LIST\t\tbatch mode [LIST is a file containing\n\
 \t\tone \"INPUT OUTPUT\" pair per line]\n\n\
 -r MIN:MAX\tpitchrange in Hertz\t\t\t\t100:600\n\
