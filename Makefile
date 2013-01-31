@@ -31,6 +31,6 @@ test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
 	./$(TARGET) -ni king.wav
 	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
-	$(RM) king.wav
+	$(RM) king.wav swipe.pyc
 
 .PHONY: clean install test

@@ -47,6 +47,8 @@ def _mean(x):
     """ 
     Compute mean. Seems to be much faster than using Numpy
     """
+    if not len(x):
+        return float('nan')
     return fsum(x) / len(x)
 
 
