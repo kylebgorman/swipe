@@ -1,23 +1,24 @@
-/* Copyright (c) 2009-2012 Kyle Gorman
+/* Copyright (c) 2009-2013 Kyle Gorman
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the 
+ * "Software"), to deal in the Software without restriction, including 
+ * without limitation the rights to use, copy, modify, merge, publish, 
+ * distribute, sublicense, and/or sell copies of the Software, and to 
+ * permit persons to whom the Software is furnished to do so, subject to 
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included 
+ * in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
  * swipe.i: SWIG file for Python module
  * Kyle Gorman
  */
@@ -30,14 +31,16 @@
 #include "swipe.h"
 %}
 
-typedef struct { int x; double* v; } vector;
+typedef struct {
+    int x; 
+    double* v; } vector;
+
 vector pyswipe(char[], double, double, double, double);
 
 %pythoncode %{
 import numpy as NP
 
 from bisect import bisect
-from heapq import nlargest
 from os import access, R_OK
 from math import log, fsum, isnan, sqrt
 
@@ -135,7 +138,7 @@ class Swipe(object):
         """
         if not tmin:
             if not tmax:
-                raise ValueError, 'At least one of tmin, tmax must be defined'
+                raise ValueError, 'tmin and/or tmax must be defined'
             else:
                 return (0, bisect(self.t, tmax))
         elif not tmax:
@@ -152,7 +155,7 @@ class Swipe(object):
             self.t = self.t[i:j]
             self.p = self.p[i:j]
         else:
-            raise ValueError, 'At least one of tmin, tmax must be defined'
+            raise ValueError, 'tmin and/or tmax must be defined'
 
     def mean(self, tmin=None, tmax=None):
         """ 
@@ -192,12 +195,9 @@ class Swipe(object):
 
     def regress(self, tmin=None, tmax=None):
         """ 
-        Return the linear regression intercept and slope for pitch ~ time. I
-        wouldn't advise using this on raw p, but rather the Mel frequency 
-        option: e.g., call Swipe(yourfilename, min, max, mel=True). The reason 
-        for this is that Mel frequency is log-proportional to p in Hertz, 
-        and I find log pitch is much closer to satisfying the normality 
-        assumption.
+        Return the linear regression intercept and slope for pitch ~ time,
+        best used with Mel frequency (it is more likely to approximately
+        satisfy the assumption that errors are normally distributed)
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)

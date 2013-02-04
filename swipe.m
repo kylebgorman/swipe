@@ -1,7 +1,7 @@
-% The following MATLAB code is taken from Camacho's dissertation appendix, and
-% has only been subject to slight modification to make it more readable. The 
-% default values are Camacho's, not mine (and in fact, are definitely not 
-% appropriate for speech, in my opinion). -- Kyle Gorman, 9/21/11
+% The following MATLAB code is taken from Camacho's dissertation appendix, 
+% and has only been subject to slight modification to make it more 
+% readable. The default values are Camacho's, not mine (and in fact, are 
+% definitely not appropriate for speech, in my opinion).
 
 more on;
 
