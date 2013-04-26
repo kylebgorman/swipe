@@ -74,7 +74,8 @@ class Swipe(object):
     Wrapper class representing a SWIPE' pitch extraction
     """
 
-    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001, mel=False):
+    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001, 
+                                                          mel=False):
         """
         Class constructor:
 
@@ -163,12 +164,7 @@ class Swipe(object):
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            t = self.t[i:j]
-            p = self.p[i:j]
-            chunk = []
-            for x in range(len(t)):
-                chunk.append((t[x], p[x]))
-            return chunk
+            return zip(self.t[i:j], self.p[i,j])
         else:
             raise ValueError, 'tmin and/or tmax must be defined'
 

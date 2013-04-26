@@ -98,7 +98,7 @@ double fixnan(double x) {
 
 // a helper function for loudness() for individual fft slices
 void La(matrix L, vector f, vector fERBs, fftw_plan plan, 
-                                   fftw_complex* fo, int w2, int hi, int i) {
+                            fftw_complex* fo, int w2, int hi, int i) {
     int j;
     fftw_execute(plan);
     vector a = makev(w2);
@@ -235,8 +235,8 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
 // helper function for populating the strength matrix on left boundary
 void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d, 
                                            intvector ws, intvector ps, 
-                                               double nyquist, double nyquist2,
-                                                  double dt, int n) {
+                                           double nyquist, double nyquist2,
+                                           double dt, int n) {
     int i; 
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -256,9 +256,9 @@ void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d,
 }
 
 // generic helper function for populating the strength matrix
-void Snth(matrix S, vector x, vector pc, vector fERBs, vector d, intvector ws,
-                                intvector ps, double nyquist, double nyquist2, 
-                                                          double dt, int n) {
+void Snth(matrix S, vector x, vector pc, vector fERBs, vector d,
+                              intvector ws, intvector ps, double nyquist, 
+                              double nyquist2, double dt, int n) {
     int i;
     int w2 = ws.v[n] / 2;
     matrix L = loudness(x, fERBs, nyquist, ws.v[n], w2);
@@ -390,7 +390,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
         pc.v[i] = pow(2, td);
         d.v[i] = 1. + td - log2(nyquist16 / ws.v[0]); 
     } // td now equals log2(min)
-    vector x = makev(info.frames); // read in the signal
+    vector x = makev((int) info.frames); // read in the signal
     sf_read_double(source, x.v, x.x);
     sf_close(source); // takes wavf with it, too
     vector fERBs = makev(ceil((hz2erb(nyquist) - 
@@ -470,8 +470,8 @@ waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, U of Florida.\n\n\
 More information: <http://ling.upenn.edu/~kgorman/C/swipe/>\n\n";
     char synops[] = "SYNPOSIS:\n\n\
-swipe [-i FILE] [-b LIST] [-o FILE] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\n\
-FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
+swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
+\nFLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
 -i FILE\t\tinput file\t\t\t\t\t<STDIN>\n\
 -o FILE\t\toutput file\t\t\t\t\t<STDOUT>\n\
 -b LIST\t\tbatch mode [LIST is a file containing\n\
@@ -502,21 +502,21 @@ FLAG:\t\tDESCRIPTION:\t\t\t\t\tDEFAULT:\n\n\
                 batch = fopen(optarg, "r"); 
                 break;
             case 'i':
-                needed = strlen(optarg);
+                needed = (int) strlen(optarg);
                 if (needed > FILENAME_MAX) {
-                    fprintf(stderr, "Input filename too long, aborting.\n");
+                    fprintf(stderr, "Filename too long, aborting.\n");
                     exit(EXIT_FAILURE);
                 }
-                wav = (char*) malloc(sizeof(char) * needed);
+                wav = (char *) malloc(sizeof(char) * needed);
                 strcpy(wav, optarg);
                 break; 
             case 'o':
-                needed = strlen(optarg);
+                needed = (int) strlen(optarg);
                 if (needed > FILENAME_MAX) {
-                    fprintf(stderr, "Output filename too long, aborting.\n");
+                    fprintf(stderr, "Filename too long, aborting.\n");
                     exit(EXIT_FAILURE);
                 }
-                out = (char*) malloc(sizeof(char) * needed);
+                out = (char *) malloc(sizeof(char) * needed);
                 strcpy(out, optarg);
                 break;
             case 'r':
