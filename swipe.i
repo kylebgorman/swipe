@@ -157,6 +157,21 @@ class Swipe(object):
         else:
             raise ValueError, 'tmin and/or tmax must be defined'
 
+    def select(self, tmin=None, tmax=None):
+        """ 
+        Select samples inside of s [tmin, tmax] inline 
+        """
+        if tmin or tmax:
+            (i, j) = self._bisect(tmin, tmax)
+            t = self.t[i:j]
+            p = self.p[i:j]
+            chunk = []
+            for x in range(len(t)):
+                chunk.append((t[x], p[x]))
+            return chunk
+        else:
+            raise ValueError, 'tmin and/or tmax must be defined'
+
     def mean(self, tmin=None, tmax=None):
         """ 
         Return pitch mean 
