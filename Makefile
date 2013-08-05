@@ -22,7 +22,7 @@ installc: $(TARGET)
 	install $(TARGET) $(PREFIX)/bin
 
 installpy: $(PYLIBS)
-	python setup.py install
+	python setup.py install --prefix=$(PREFIX) 
 
 clean: 
 	$(RM) -r $(TARGET) $(WRAPPERS) $(PYLIBS)

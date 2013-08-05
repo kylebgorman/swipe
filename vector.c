@@ -474,26 +474,28 @@ double splinv(vector x, vector y, vector y2, double val, int hi) {
 }
 
 // polynomial fitting with CLAPACK: solves poly(A, m) * X = B
-vector polyfit(vector A, vector B, int order) { 
+vector polyfit(vector A, vector B, int degree) {
     int i;                                      
     int j;
     int info;
-    order++; // I find it intuitive this way...
-    double* Ap = malloc(sizeof(double) * order * A.x); 
-    for (i = 0; i < order; i++)
+    degree++; // I find it intuitive this way...
+    double* Ap = malloc(sizeof(double) * degree * A.x); 
+    for (i = 0; i < degree; i++)
         for (j = 0; j < A.x; j++) 
-            Ap[i * A.x + j] = pow(A.v[j], order - i - 1); // mimics MATLAB
-    vector Bp = makev(order >= B.x ? order : B.x); 
+            Ap[i * A.x + j] = pow(A.v[j], degree - i - 1); // mimics MATLAB
+    vector Bp = makev(degree >= B.x ? degree : B.x); 
     for (i = 0; i < B.x; i++)
         Bp.v[i] = B.v[i];
     i = 1; // nrhs, j is info
-    j = A.x + order; // lwork
+    j = A.x + degree; // lwork
     double* work = malloc(sizeof(double) * j);
-    dgels_("N", &A.x, &order, &i, Ap, &B.x, Bp.v, &order, work, &j, &info);
+    dgels_("N", &A.x, &degree, &i, Ap, &B.x, Bp.v, &degree, work, &j, 
+                                                              &info);
     free(Ap);
     free(work);
     if (info < 0) {
-        fprintf(stderr, "LAPACK routine dgels() returns error: %d\n", info);
+        fprintf(stderr, "LAPACK routine dgels() returned error: %d\n", 
+                                                                info);
         exit(EXIT_FAILURE);
     }
     return(Bp);
