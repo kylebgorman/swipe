@@ -20,7 +20,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  * swipe.c: primary functions
- * Kyle Gorman
+ * Kyle Gorman <gormanky@ohsu.edu>
  */
 
 #define VNUM    1.5 // current version
@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
+#include <stdbool.h>
 
 #include <fftw3.h>   // http://www.fftw.org/
 #include <sndfile.h> // http://www.mega-nerd.com/libsndfile/
@@ -38,9 +39,6 @@
 #include "vector.h"  // comes with release
 
 #define NOK     0
-
-#define TRUE    1
-#define FALSE   0
 
 #define DERBS   .1 
 #define POLYV   .0013028 //  1 / 12 / 64 = 1 / 768
@@ -364,7 +362,7 @@ vector swipe(int fid, double min, double max, double st, double dt) {
     int i; 
     double td = 0.;
     SF_INFO info;
-    SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, TRUE);
+    SNDFILE* source = sf_open_fd(fid, SFM_READ, &info, true);
     if (source == NULL || info.sections < 1) 
         return(makev(0)); 
     double nyquist = info.samplerate / 2.;
@@ -486,8 +484,8 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
     // all set by #defines
     double st = ST; 
     double dt = DT;
-    int vlo = TRUE;
-    int mel = FALSE; 
+    bool vlo = true;
+    bool mel = false;
     double min = MIN;
     double max = MAX; 
     int ch;
@@ -530,10 +528,10 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
                 dt = atof(optarg);
                 break;
             case 'm':
-                mel = TRUE; 
+                mel = true; 
                 break;
             case 'n':
-                vlo = FALSE; 
+                vlo = false; 
                 break;
             case 'h':
                 fprintf(stderr, "%s", header); 

@@ -19,97 +19,104 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
- * 
  * vector.h: header for vector.c
- * Kyle Gorman
+ * Kyle Gorman <gormanky@ohsu.edu>
  */
+
+#ifndef VECTOR_H
+#define VECTOR_H
 
 // vector stuff
 typedef struct { 
     int x; 
-    double* v; 
+    double *v; 
 } vector;
 
-vector                            makev(int);
-vector                            zerov(int);
-vector                            onesv(int);
-vector                            nansv(int);
-vector                            copyv(vector);
+vector                         makev(int);
+vector                         zerov(int);
+vector                         onesv(int);
+vector                         nansv(int);
+vector                         copyv(vector);
 
-int                               maxv(vector);
-int                               minv(vector);
-int                               bisectv(vector, double);
-int                               bilookv(vector, double, int);
+int                            maxv(vector);
+int                            minv(vector);
+int                            bisectv(vector, double);
+int                            bilookv(vector, double, int);
 
-void                              freev(vector);
-void                              printv(vector);
+void                           freev(vector);
+void                           printv(vector);
 
 // intvector stuff
 typedef struct { 
-    int x; int* v; 
+    int x; 
+    int *v; 
 } intvector;
 
-intvector                         makeiv(int);
-intvector                         zeroiv(int);
-intvector                         onesiv(int);
-intvector                         copyiv(intvector);
+intvector                      makeiv(int);
+intvector                      zeroiv(int);
+intvector                      onesiv(int);
+intvector                      copyiv(intvector);
 
-vector                            iv2v(intvector);
+vector                         iv2v(intvector);
 
-int                               maxiv(intvector);
-int                               miniv(intvector);
-int                               bisectiv(intvector, int);
-int                               bilookiv(intvector, int, int);
+int                            maxiv(intvector);
+int                            miniv(intvector);
+int                            bisectiv(intvector, int);
+int                            bilookiv(intvector, int, int);
 
-void                              freeiv(intvector);
-void                              printiv(intvector);
+void                           freeiv(intvector);
+void                           printiv(intvector);
 
 // matrix stuff
 typedef struct { 
     int x; 
     int y; 
-    double** m; } matrix;
+    double **m; 
+} matrix;
 
-matrix                            makem(int, int);
-matrix                            zerom(int, int); 
-matrix                            onesm(int, int); 
-matrix                            nansm(int, int);
-matrix                            copym(matrix);
-void                              freem(matrix);
-void                              printm(matrix);
+matrix                         makem(int, int);
+matrix                         zerom(int, int); 
+matrix                         onesm(int, int); 
+matrix                         nansm(int, int);
+matrix                         copym(matrix);
+void                           freem(matrix);
+void                           printm(matrix);
 
 // intmatrix stuff
 typedef struct { 
     int x; 
     int y; 
-    int** m; } intmatrix;
+    int **m; 
+} intmatrix;
 
-intmatrix                         makeim(int, int);
-intmatrix                         zeroim(int, int); 
-intmatrix                         onesim(int, int); 
-intmatrix                         copyim(intmatrix);
+intmatrix                      makeim(int, int);
+intmatrix                      zeroim(int, int); 
+intmatrix                      onesim(int, int); 
+intmatrix                      copyim(intmatrix);
 
-matrix                            im2m(intmatrix); // cast
+matrix                         im2m(intmatrix); // cast
 
-void                              freeim(intmatrix);
-void                              printim(intmatrix);
+void                           freeim(intmatrix);
+void                           printim(intmatrix);
 
 // prime sieve
-#define NP                         0
-#define PR                         1
+#define NP                     0
+#define PR                     1
 
-#define PRIME(x)                   (x == 1)
+#define PRIME(x)               (x == 1)
 
-int                                sieve(intvector);
-intvector                          primes(int);
+int                            sieve(intvector);
+intvector                      primes(int);
 
 // cubic spline
-#define YP1                        2.
-#define YPN                        2.
+#define YP1                    2.
+#define YPN                    2.
 
-vector                             spline(vector, vector);
-double                             splinv(vector, vector, vector, double, int);
+vector                         spline(vector, vector);
+double                         splinv(vector, vector, vector, double, int);
 
 // polynomial fitting
-vector                             polyfit(vector, vector, int);
-double                             polyval(vector, double);
+vector                         polyfit(vector, vector, int);
+double                         polyval(vector, double);
+
+#endif

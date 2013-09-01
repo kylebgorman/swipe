@@ -1,5 +1,5 @@
 PREFIX=/usr/local
-CFLAGS=-O2
+CFLAGS=-std=c99 -O2
 
 TARGET=swipe
 WRAPPERS=$(TARGET)_wrap.c $(TARGET).py
@@ -25,12 +25,12 @@ installpy: $(PYLIBS)
 	python setup.py install --prefix=$(PREFIX) 
 
 clean: 
-	$(RM) -r $(TARGET) $(WRAPPERS) $(PYLIBS)
+	$(RM) -r $(TARGET) $(WRAPPERS) $(PYLIBS) king.wav *.pyc
 
 test: swipe
 	curl -O http://facstaff.bloomu.edu/jtomlins/Sounds/king.wav
-	./$(TARGET) -ni king.wav
-	python -c "import swipe; print swipe.Swipe('king.wav').regress(tmax=2.)"
+	./$(TARGET) -r 50:400 -n -i king.wav
+	python -c "import swipe; print swipe.Swipe('king.wav').regress()"
 	$(RM) king.wav swipe.pyc
 
 .PHONY: clean install test
