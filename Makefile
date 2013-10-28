@@ -1,5 +1,5 @@
 PREFIX=/usr/local
-CFLAGS=-std=c99 -O2
+CFLAGS=-std=c99 -O2 #with homebrew: -I/usr/local/Cellar/fftw/3.3.3/include -I/usr/local/Cellar/libsndfile/1.0.25/include -L/usr/local/Cellar/fftw/3.3.3/lib -L/usr/local/Cellar/libsndfile/1.0.25/lib
 
 TARGET=swipe
 WRAPPERS=$(TARGET)_wrap.c $(TARGET).py

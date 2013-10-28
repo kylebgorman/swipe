@@ -606,16 +606,21 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
         else {
             FILE* input = fopen(wav, "r");
             if (input == NULL) {
-                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
+                fprintf(stderr, "Reading from \"%s\" failed (try ", wav);
+                fprintf(stderr, "specifying an input file with -i).\n");
                 exit(EXIT_FAILURE);
             }
             p = swipe(fileno(input), min, max, st, dt);
         }
         if (p.x == NOK) {
-            if (*wav == '\0') 
-                fprintf(stderr, "Reading from STDIN failed.\n");
-            else 
-                fprintf(stderr, "Reading from \"%s\" failed.\n", wav);
+            if (*wav == '\0') {
+                fprintf(stderr, "Reading from STDIN failed (did ");
+                fprintf(stderr, "you pipe a file to `swipe`?').\n");
+            }
+            else {
+                fprintf(stderr, "Reading from \"%s\" failed (try ", wav);
+                fprintf(stderr, "specifying an input file with -i).\n");
+            }
             exit(EXIT_FAILURE);
         }
         else {
@@ -624,7 +629,7 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
             else {
                 FILE* output = fopen(out, "w");
                 if (output == NULL) {
-                    fprintf(stderr, "Writing to \"%s\" failed", out);
+                    fprintf(stderr, "Writing to \"%s\" failed.\n", out);
                     exit(EXIT_FAILURE);
                 }
                 printp(p, fileno(output), dt, mel, vlo);
