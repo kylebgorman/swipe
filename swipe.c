@@ -521,10 +521,10 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
                 min = atof(strtok(optarg, ":"));
                 max = atof(strtok(NULL, ":")); 
                 break;
-            case 's':
+            case 't':
                 st = atof(optarg);
                 break;
-            case 't':
+            case 's':
                 dt = atof(optarg);
                 break;
             case 'm':
