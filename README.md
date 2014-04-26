@@ -4,7 +4,7 @@ SWIPE' pitch estimator, v. 1.5
 Based on Camacho, Arturo. A sawtooth waveform inspired pitch estimator for
 speech and music. Doctoral dissertation, University of Florida. 2007.
 
-Implemented in C by Kyle Gorman <kgorman@ling.upenn.edu>
+Implemented in C by Kyle Gorman <gormanky@ohsu.edu>
 
 How to cite:
 ------------
@@ -18,7 +18,7 @@ For all platforms: To compile, type `make` at the terminal. To install, type `ma
 
 Linux: All the large libraries should be available as packages if you're using a "modern" distro. For instance, on a Ubuntu system (Ubuntu 9.04, "Jaunty Jackalope", kernel 2.6.28-13-generic), I ran:
 
-    sudo apt-get install liblibblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
+    sudo apt-get install libblas-dev liblapack-dev libfftw3-dev libsndfile1-dev swig
 
 This installs the necessary libraries and all their dependencies. Similar
 incantations are available for other Linux distributions.

@@ -463,7 +463,7 @@ int main(int argc, char* argv[]) {
     char output[] = "OUTPUT:\npitch_0\ttime_0\npitch_1\ttime_1\n...\t...\
     \npitch_N\ttime_N\n\n"; 
     char header[] = "\nSWIPE' pitch tracker, implemented by Kyle Gorman \
-<kgorman@ling.upenn.edu>, \nbased on: A. Camacho. 2007. A sawtooth \
+<gormanky@ohsu.edu>, \nbased on: A. Camacho. 2007. A sawtooth \
 waveform inspired pitch estimator\nfor speech and music. Doctoral \
 dissertation, U of Florida.\n\n\
 More information: <http://ling.upenn.edu/~kgorman/C/swipe/>\n\n";
