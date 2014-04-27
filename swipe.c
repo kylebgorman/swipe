@@ -38,17 +38,21 @@
 
 #include "vector.h"  // comes with release
 
-#define NOK     0
+#define NOK      0
 
-#define DERBS   .1 
-#define POLYV   .0013028 //  1 / 12 / 64 = 1 / 768
-#define DLOG2P  .0104167 // 1/96
+#define DERBS    .1 
+#define POLYV    .0013028 //  1 / 12 / 64 = 1 / 768
+#define DLOG2P   .0104167 // 1/96
 
 // feel free to change these defaults
-#define ST      .3  
-#define DT      .001
-#define MIN     100.
-#define MAX     600.
+#define ST       .3  
+#define DT       .001
+#define MIN      100.
+#define MAX      600.
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 #ifndef NAN
     #define NAN sqrt(-1.)
