@@ -251,7 +251,7 @@ void Sfirst(matrix S, vector x, vector pc, vector fERBs, vector d,
         pci.v[i] = pc.v[i];
         mu.v[i] = 1. - fabs(d.v[i] - 1.);
     } // end of Sfirst-specific code
-    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
+    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
@@ -275,7 +275,7 @@ void Snth(matrix S, vector x, vector pc, vector fERBs, vector d,
         mu.v[ti] = 1. - fabs(d.v[i] - (n + 1));
         ti++;
     } // end of Snth-specific code
-    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
+    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
@@ -300,7 +300,7 @@ void Slast(matrix S, vector x, vector pc, vector fERBs, vector d,
         mu.v[ti] = 1. - fabs(d.v[i] - (n + 1));
         ti++;
     } // end of Slast-specific code
-    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, hi, psz, w2); 
+    Sadd(S, L, fERBs, pci, mu, ps, dt, nyquist2, lo, psz, w2); 
     freem(L);
     freev(mu);
     freev(pci); 
