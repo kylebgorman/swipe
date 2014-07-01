@@ -177,7 +177,7 @@ matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) {
 void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu, 
                                             intvector ps, double dt, 
                                             double nyquist2, int lo, 
-                                            int hi, int psz, int w2) {
+                                            int psz, int w2) {
     int i;
     int j;
     int k; 
