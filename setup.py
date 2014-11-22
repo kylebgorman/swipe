@@ -24,7 +24,7 @@
 # setup.py: for building SWIG bridge to Python
 # Kyle Gorman
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 setup(name='swipe', version='1.5', author='Kyle Gorman', 
 description="""SWIPE' pitch estimator""", py_modules=['swipe'], 

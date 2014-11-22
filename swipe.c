@@ -118,9 +118,7 @@ void La(matrix L, vector f, vector fERBs, fftw_plan plan,
 
 // a function for populating the loudness matrix with a signal x
 matrix loudness(vector x, vector fERBs, double nyquist, int w, int w2) {
-    int i;
-    int j; 
-    int hi;
+    int i, j, hi; 
     int offset = 0;
     double td = nyquist / w2; // this is equivalent to fstep
     // testing showed this configuration of fftw to be fastest
@@ -178,12 +176,10 @@ void Sadd(matrix S, matrix L, vector fERBs, vector pci, vector mu,
                                             intvector ps, double dt, 
                                             double nyquist2, int lo, 
                                             int psz, int w2) {
-    int i;
-    int j;
-    int k; 
+    int i, j, k;
     double t = 0.;
     double tp = 0.;
-    double td; 
+    double td;
     double dtp = w2 / nyquist2;
     matrix Slocal = zerom(psz, L.x);
     for (i = 0; i < Slocal.x; i++) {
@@ -308,13 +304,10 @@ void Slast(matrix S, vector x, vector pc, vector fERBs, vector d,
 
 // performs polynomial tuning on the strength matrix to determine the pitch
 vector pitch(matrix S, vector pc, double st) {
-    int i;
-    int j;
+    int i, j;
     int maxi = -1;
     int search = (int) round((log2(pc.v[2]) - log2(pc.v[0])) / POLYV + 1.);
-    double nftc; 
-    double maxv;
-    double log2pc;
+    double nftc, maxv, log2pc;
     double tc2 = 1. / pc.v[1];
     vector coefs;
     vector s = makev(3);
@@ -501,7 +494,7 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
     while ((ch = getopt(argc, argv, "i:o:r:s:t:b:mnhv")) != -1) {
         switch(ch) {
             case 'b':
-                batch = fopen(optarg, "r"); 
+                batch = fopen(optarg, "r");
                 break;
             case 'i':
                 needed = (int) strlen(optarg);
