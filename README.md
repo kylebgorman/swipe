@@ -4,7 +4,7 @@ SWIPE' pitch estimator, v. 1.5
 Based on Camacho, Arturo. A sawtooth waveform inspired pitch estimator for
 speech and music. Doctoral dissertation, University of Florida. 2007.
 
-Implemented in C by Kyle Gorman <gormanky@ohsu.edu>
+Implemented in C by Kyle Gorman <kylebgorman@gmail.com>
 
 How to cite:
 ------------
