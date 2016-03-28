@@ -164,7 +164,7 @@ class Swipe(object):
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
-            return zip(self.t[i:j], self.p[i,j])
+            return zip(self.t[i:j], self.p[i:j])
         else:
             raise ValueError, 'tmin and/or tmax must be defined'
 
