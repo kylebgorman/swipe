@@ -75,7 +75,7 @@ class Swipe(object):
     """
 
     def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001, 
-                                                          mel=False):
+                 mel=False, show_nan=False):
         """
         Class constructor:
 
@@ -84,6 +84,7 @@ class Swipe(object):
         pmax = maximum frequency in Hz
         st = strength threshold (must be between [0.0, 1.0])
         dt = samplerate in seconds
+        mel = output Mel pitch
         show_nan = if True, voiceless intervals are returned, marked as nan.
         """
         # Get Python path, just in case someone passed a file object
@@ -105,12 +106,20 @@ class Swipe(object):
         self.p = []
         if P.x < 1: 
             raise(ValueError('Failed to read audio'))
-        for i in range(P.x):
-            val = doublea_getitem(P.v, i)
-            if not isnan(val):
+        if not show_nan:
+            for i in range(P.x):
+                val = doublea_getitem(P.v, i)
+                if not isnan(val):
+                    self.t.append(tt)
+                    self.p.append(conv(val))
+                tt += dt
+        else:
+            for i in range(P.x):
+                val = doublea_getitem(P.v, i)
                 self.t.append(tt)
                 self.p.append(conv(val))
-            tt += dt
+                tt += dt
+ 
 
     def __str__(self):
         return '<Swipe pitch track with {0} points>'.format(len(self.t))
