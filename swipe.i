@@ -1,24 +1,24 @@
 /* Copyright (c) 2009-2013 Kyle Gorman
  *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the 
+ * "Software"), to deal in the Software without restriction, including 
+ * without limitation the rights to use, copy, modify, merge, publish, 
+ * distribute, sublicense, and/or sell copies of the Software, and to 
+ * permit persons to whom the Software is furnished to do so, subject to 
  * the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
+ * 
+ * The above copyright notice and this permission notice shall be included 
  * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
+ * 
  * swipe.i: SWIG file for Python module
  * Kyle Gorman
  */
@@ -32,7 +32,7 @@
 %}
 
 typedef struct {
-    int x;
+    int x; 
     double* v; } vector;
 
 vector pyswipe(char[], double, double, double, double);
@@ -47,7 +47,7 @@ from math import log, fsum, isnan, sqrt
 ## helper functions
 
 def _mean(x):
-    """
+    """ 
     Compute mean. Seems to be much faster than using Numpy
     """
     if not len(x):
@@ -74,7 +74,7 @@ class Swipe(object):
     Wrapper class representing a SWIPE' pitch extraction
     """
 
-    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001,
+    def __init__(self, path, pmin=100., pmax=600., st=.3, dt=.001, 
                  mel=False, show_nan=False):
         """
         Class constructor:
@@ -90,21 +90,21 @@ class Swipe(object):
         # Get Python path, just in case someone passed a file object
         f = path.name if hasattr(path, 'read') else path
         # check the path, quickly
-        if not access(f, R_OK):
+        if not access(f, R_OK): 
             raise(IOError('File "{0}" not found'.format(f)))
         # Obtain the vector itself
         P = pyswipe(f, pmin, pmax, st, dt)
         # get function
         conv = None
-        if mel:
+        if mel: 
             conv = lambda hz: 1127.01048 * log(1. + hz / 700.)
-        else:
+        else: 
             conv = lambda hz: hz
         # generate
         tt = 0.
         self.t = []
         self.p = []
-        if P.x < 1:
+        if P.x < 1: 
             raise(ValueError('Failed to read audio'))
         if show_nan:
             for i in range(P.x):
@@ -119,6 +119,7 @@ class Swipe(object):
                     self.t.append(tt)
                     self.p.append(conv(val))
                 tt += dt
+ 
 
     def __str__(self):
         return '<Swipe pitch track with {0} points>'.format(len(self.t))
@@ -130,8 +131,8 @@ class Swipe(object):
         return iter(zip(self.t, self.p))
 
     def __getitem__(self, t):
-        """
-        Takes a  argument and gives the nearest sample
+        """ 
+        Takes a  argument and gives the nearest sample 
         """
         if self.t[0] <= 0.:
             raise ValueError, 'Time less than 0'
@@ -142,7 +143,7 @@ class Swipe(object):
             return self.p[i]
 
     def _bisect(self, tmin=None, tmax=None):
-        """
+        """ 
         Helper for bisection, but is a instance method
         """
         if not tmin:
@@ -156,8 +157,8 @@ class Swipe(object):
             return (bisect(self.t, tmin), bisect(self.t, tmax))
 
     def slice(self, tmin=None, tmax=None):
-        """
-        Slice out samples outside of s [tmin, tmax] inline
+        """ 
+        Slice out samples outside of s [tmin, tmax] inline 
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
@@ -167,8 +168,8 @@ class Swipe(object):
             raise ValueError, 'tmin and/or tmax must be defined'
 
     def select(self, tmin=None, tmax=None):
-        """
-        Select samples inside of s [tmin, tmax] inline
+        """ 
+        Select samples inside of s [tmin, tmax] inline 
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
@@ -177,8 +178,8 @@ class Swipe(object):
             raise ValueError, 'tmin and/or tmax must be defined'
 
     def mean(self, tmin=None, tmax=None):
-        """
-        Return pitch mean
+        """ 
+        Return pitch mean 
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
@@ -195,10 +196,10 @@ class Swipe(object):
             return _median(self.p[i:j])
         else:
             return _median(self.p)
-
+    
     def var(self, tmin=None, tmax=None):
-        """
-        Return pitch variance
+        """ 
+        Return pitch variance 
         """
         if tmin or tmax:
             (i, j) = self._bisect(tmin, tmax)
@@ -207,13 +208,13 @@ class Swipe(object):
             return NP.var(self.p)
 
     def sd(self, tmin=None, tmax=None):
-        """
-        Return pitch standard deviation
+        """ 
+        Return pitch standard deviation 
         """
         return sqrt(self.var(tmin, tmax))
 
     def regress(self, tmin=None, tmax=None):
-        """
+        """ 
         Return the linear regression intercept and slope for pitch ~ time,
         best used with Mel frequency (it is more likely to approximately
         satisfy the assumption that errors are normally distributed)
