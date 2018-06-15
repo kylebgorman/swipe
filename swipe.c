@@ -569,7 +569,7 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
         // iterate through batch pairs
         wav = (char *) malloc(1024*sizeof(char));
         out = (char *) malloc(1024*sizeof(char));
-        while (fscanf(batch, "%s %s", wav, out) != EOF) {
+        while (fscanf(batch, "%1023s %1023s", wav, out) != EOF) {
             printf("%s -> %s...", wav, out);
             FILE* wf = fopen(wav, "r");
             if (wf == NULL) {
