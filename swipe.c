@@ -452,7 +452,8 @@ void printp(vector p, int fid, double dt, int mel, int vlo) {
                 t += dt;
             }
         }
-    } 
+    }
+    fflush(sink);
 }
 
 // main method, interfacing with user arguments
@@ -566,6 +567,8 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
     }
     if (batch != NULL) { 
         // iterate through batch pairs
+        wav = (char *) malloc(1024*sizeof(char));
+        out = (char *) malloc(1024*sizeof(char));
         while (fscanf(batch, "%s %s", wav, out) != EOF) {
             printf("%s -> %s...", wav, out);
             FILE* wf = fopen(wav, "r");
@@ -593,6 +596,8 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
             freev(p);
         }
         fclose(batch);
+        free(wav);
+        free(out);
     }
     else {
         vector p;
