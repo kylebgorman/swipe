@@ -567,8 +567,8 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
     }
     if (batch != NULL) { 
         // iterate through batch pairs
-        wav = (char *) malloc(1024*sizeof(char));
-        out = (char *) malloc(1024*sizeof(char));
+        char wav[1024];
+        char out[1024];
         while (fscanf(batch, "%1023s %1023s", wav, out) != EOF) {
             printf("%s -> %s...", wav, out);
             FILE* wf = fopen(wav, "r");
@@ -596,8 +596,6 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
             freev(p);
         }
         fclose(batch);
-        free(wav);
-        free(out);
     }
     else {
         vector p;
