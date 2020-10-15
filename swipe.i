@@ -135,7 +135,7 @@ class Swipe(object):
         Takes a  argument and gives the nearest sample 
         """
         if self.t[0] <= 0.:
-            raise ValueError, 'Time less than 0'
+            raise(ValueError('Time less than 0'))
         i = bisect(self.t, t)
         if self.t[i] - t > t - self.t[i - 1]:
             return self.p[i - 1]
@@ -148,7 +148,7 @@ class Swipe(object):
         """
         if not tmin:
             if not tmax:
-                raise ValueError, 'tmin and/or tmax must be defined'
+                raise(ValueError('tmin and/or tmax must be defined'))
             else:
                 return (0, bisect(self.t, tmax))
         elif not tmax:
@@ -165,7 +165,7 @@ class Swipe(object):
             self.t = self.t[i:j]
             self.p = self.p[i:j]
         else:
-            raise ValueError, 'tmin and/or tmax must be defined'
+            raise(ValueError('tmin and/or tmax must be defined'))
 
     def select(self, tmin=None, tmax=None):
         """ 
@@ -175,7 +175,7 @@ class Swipe(object):
             (i, j) = self._bisect(tmin, tmax)
             return zip(self.t[i:j], self.p[i:j])
         else:
-            raise ValueError, 'tmin and/or tmax must be defined'
+            raise(ValueError('tmin and/or tmax must be defined'))
 
     def mean(self, tmin=None, tmax=None):
         """ 
