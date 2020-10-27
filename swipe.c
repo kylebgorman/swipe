@@ -498,7 +498,7 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
                 batch = fopen(optarg, "r");
                 break;
             case 'i':
-                needed = (int) strlen(optarg);
+                needed = (int) (strlen(optarg) + 1);
                 if (needed > FILENAME_MAX) {
                     fprintf(stderr, "Filename too long, aborting.\n");
                     exit(EXIT_FAILURE);
@@ -507,7 +507,7 @@ swipe [-i FILE] [-o FILE] [-b LIST] [-r MIN:MAX] [-s TS] [-t DT] [-mnhv]\n\
                 strcpy(wav, optarg);
                 break; 
             case 'o':
-                needed = (int) strlen(optarg);
+                needed = (int) (strlen(optarg) + 1);
                 if (needed > FILENAME_MAX) {
                     fprintf(stderr, "Filename too long, aborting.\n");
                     exit(EXIT_FAILURE);
